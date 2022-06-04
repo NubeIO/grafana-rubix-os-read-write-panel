@@ -1,0 +1,30 @@
+{
+  "type": "panel",
+  "name": "Rubix Service R/W Panel",
+  "id": "nubeio-grafana-rubix-service-read-write-panel",
+  "info": {
+    "description": "Grafana Rubix Service Read Write Panel",
+    "author": {
+      "name": "Nube iO",
+      "url": "https://nubeio.com"
+    },
+    "keywords": ["rubix service", "read write panel"],
+    "logos": {
+      "small": "assets/img/logo.svg",
+      "large": "assets/img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/NubeIO/grafana-rubix-service-read-write-panel"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/NubeIO/grafana-rubix-service-read-write-panel/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  }
+}
