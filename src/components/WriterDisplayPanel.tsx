@@ -38,6 +38,17 @@ const getStyles = stylesFactory(() => {
       color: #999;
       text-transform: uppercase;
     `,
+    warningText: css`
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #999;
+      text-transform: uppercase;
+      text-align: center;
+    `,
+    textCenter: css`{
+      text-align: center;
+    }`,
     value: css`
       font-size: 5em;
     `,
@@ -74,8 +85,17 @@ export const WriterDisplayPanel: React.FC<WriterDisplayPanelProps> = (props: Wri
     return `${writer.writer_thing_name} - ${writer.writer_thing_class}`;
   };
 
+  useEffect(() => {
+    updatedTime(new Date(timeFieldValue));
+    updateWriter(fieldValue);
+  }, [fieldValue, timeFieldValue]);
+
   if (!writer) {
-    return null;
+    return (
+      <div className={styles.container}>
+        <p className={styles.warningText}>Please! selected a writer from appropriate data source.</p>
+      </div>
+    );
   }
 
   return (
