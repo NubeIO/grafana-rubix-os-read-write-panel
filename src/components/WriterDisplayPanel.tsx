@@ -2,27 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _get from 'lodash.get';
 import { stylesFactory } from '@grafana/ui';
 import { css } from 'emotion';
-
-import { PanelData } from '@grafana/data';
-
-interface RubixServiceObject {
-  uuid: string;
-  name: string;
-}
-
-interface PhysicalWriterMap {
-  [writer_thing_uuid: string]: {
-    network: RubixServiceObject;
-    point: RubixServiceObject;
-    device: RubixServiceObject;
-  };
-}
-
-interface WriterDisplayPanelProps {
-  service: Function | any;
-  data: PanelData;
-  phyWriterMap: PhysicalWriterMap;
-}
+import { PanelProps } from './panelProps';
 
 const getStyles = stylesFactory(() => {
   return {
@@ -46,16 +26,16 @@ const getStyles = stylesFactory(() => {
       text-transform: uppercase;
       text-align: center;
     `,
-    textCenter: css`{
+    textCenter: css`
       text-align: center;
-    }`,
+    `,
     value: css`
       font-size: 5em;
     `,
   };
 });
 
-export const WriterDisplayPanel: React.FC<WriterDisplayPanelProps> = (props: WriterDisplayPanelProps) => {
+export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
   const { data, phyWriterMap } = props;
   const styles = getStyles();
   const series = _get(data, 'series', []);
