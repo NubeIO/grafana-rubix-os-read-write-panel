@@ -4,6 +4,7 @@ import { SliderEditor } from './components/SliderEditor';
 import { PanelPlugin } from '@grafana/data';
 import { BasePanel } from './BasePanel';
 import { ColorPicker } from '@grafana/ui';
+import { MultiSwitchTab } from './components/MultiSwitchTab';
 
 const datePickerStyle = { display: 'flex', alignItems: 'center', height: '32px' };
 
@@ -17,9 +18,23 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           options: [
             { value: PanelType.SLIDER, label: PanelTypeLabel[PanelType.SLIDER] },
             { value: PanelType.DISPLAY, label: PanelTypeLabel[PanelType.DISPLAY] },
+            { value: PanelType.MULTISWITCH, label: PanelTypeLabel[PanelType.MULTISWITCH] },
           ],
         },
         defaultValue: PanelType.DISPLAY,
+      })
+      .addCustomEditor({
+        id: 'multiSwitchTab',
+        path: 'multiSwitchTab',
+        name: 'Number of Count',
+        category: [PanelType.MULTISWITCH],
+        editor: props => {
+          return <MultiSwitchTab {...props} />;
+        },
+
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.MULTISWITCH;
+        },
       })
       .addBooleanSwitch({
         path: 'overrideButtonColorSettings',
@@ -27,7 +42,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         defaultValue: false,
         category: [CategoryType.ButtonColorSettings],
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER].includes(currentConfig.panelType);
+          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType);
         },
       })
       .addCustomEditor({
@@ -49,7 +64,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
         },
       })
       .addCustomEditor({
@@ -71,7 +86,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
         },
       })
       .addCustomEditor({
@@ -93,7 +108,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
         },
       })
       .addCustomEditor({
@@ -115,7 +130,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
         },
       })
       .addBooleanSwitch({

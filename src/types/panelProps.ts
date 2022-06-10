@@ -1,6 +1,7 @@
 import { PanelData } from '@grafana/data';
 import { FieldConfig } from '@grafana/data';
 import { PanelOptions } from '../types';
+
 export interface RubixServiceObject {
   uuid: string;
   name: string;

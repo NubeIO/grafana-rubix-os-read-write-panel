@@ -7,6 +7,7 @@ import { stylesFactory } from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
 import WriterDisplayPanel from './components/WriterDisplayPanel';
 import SliderPanel from './components/SliderPanel';
+import MultiSwitchPanel from './panels/MultiSwitch';
 import { PanelOptions, PanelType, ButtonColorSettings, SliderColorSettings, BISettingsProps } from './types';
 
 interface Props extends PanelProps<PanelOptions> {}
@@ -177,9 +178,21 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
             isRunning={isRunning}
             customStyles={customStyles}
             setIsRunning={setIsRunning}
+            services={dataSource.services}
             fieldConfig={fieldConfig.defaults}
             phyWriterMap={dataSource.flowNetworksPhyDevices}
+          />
+        )}
+        {renderPanelType(PanelType.MULTISWITCH) && (
+          <MultiSwitchPanel
+            data={data}
+            options={options}
+            isRunning={isRunning}
+            customStyles={customStyles}
+            setIsRunning={setIsRunning}
             services={dataSource.services}
+            fieldConfig={fieldConfig.defaults}
+            phyWriterMap={dataSource.flowNetworksPhyDevices}
           />
         )}
         {backgroundImageURL && (

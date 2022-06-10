@@ -35,9 +35,10 @@ export enum PanelType {
 export const PanelTypeLabel = {
   [PanelType.DISPLAY]: 'Display Panel',
   [PanelType.SLIDER]: 'Slider',
+  [PanelType.MULTISWITCH]: 'Multi Switch',
 };
 
-export interface PanelOptions extends SliderOptions, BackgroundOptions, ButtonOptions, BackgroundOptions {
+export interface PanelOptions extends MultiSwitchOptions, SliderOptions, BackgroundOptions, ButtonOptions, BackgroundOptions {
   panelType: PanelType;
 }
 

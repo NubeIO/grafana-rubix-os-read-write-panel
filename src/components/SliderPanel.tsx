@@ -8,7 +8,7 @@ import { AppEvents } from '@grafana/data';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
 
-import { PanelProps } from './panelProps';
+import { PanelProps } from '../types/panelProps';
 
 interface SliderProps extends PanelProps {
   customStyles: any;
