@@ -19,6 +19,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
             { value: PanelType.SLIDER, label: PanelTypeLabel[PanelType.SLIDER] },
             { value: PanelType.DISPLAY, label: PanelTypeLabel[PanelType.DISPLAY] },
             { value: PanelType.MULTISWITCH, label: PanelTypeLabel[PanelType.MULTISWITCH] },
+            { value: PanelType.SWITCH, label: PanelTypeLabel[PanelType.SWITCH] },
           ],
         },
         defaultValue: PanelType.DISPLAY,
@@ -34,6 +35,59 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
 
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.panelType === PanelType.MULTISWITCH;
+        },
+      })
+      .addBooleanSwitch({
+        path: 'overrideSwitchColorSettings',
+        name: 'Override Switch Color Settings',
+        defaultValue: false,
+        category: [CategoryType.SwitchColorSettings],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SWITCH;
+        },
+      })
+      .addCustomEditor({
+        id: 'switchTrueColor',
+        path: 'switchTrueColor',
+        name: 'True Color',
+        defaultValue: '#52D869',
+        category: [CategoryType.SwitchColorSettings],
+        editor: props => {
+          return (
+            <div style={datePickerStyle}>
+              <ColorPicker
+                color={props.value}
+                onChange={color => {
+                  props.onChange(color);
+                }}
+              />
+            </div>
+          );
+        },
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SWITCH && currentConfig.overrideSwitchColorSettings;
+        },
+      })
+      .addCustomEditor({
+        id: 'switchFalseColor',
+        path: 'switchFalseColor',
+        name: 'False Color',
+        defaultValue: '#7E7E7E',
+        category: [CategoryType.SwitchColorSettings],
+        editor: props => {
+          return (
+            <div style={datePickerStyle}>
+              <ColorPicker
+                color={props.value}
+                onChange={color => {
+                  props.onChange(color);
+                }}
+              />
+            </div>
+          );
+        },
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SWITCH && currentConfig.overrideSwitchColorSettings;
         },
       })
       .addBooleanSwitch({
@@ -64,7 +118,10 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return (
+            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            currentConfig.overrideButtonColorSettings
+          );
         },
       })
       .addCustomEditor({
@@ -86,7 +143,10 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return (
+            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            currentConfig.overrideButtonColorSettings
+          );
         },
       })
       .addCustomEditor({
@@ -108,7 +168,10 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return (
+            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            currentConfig.overrideButtonColorSettings
+          );
         },
       })
       .addCustomEditor({
@@ -130,7 +193,10 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           );
         },
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) && currentConfig.overrideButtonColorSettings;
+          return (
+            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            currentConfig.overrideButtonColorSettings
+          );
         },
       })
       .addBooleanSwitch({

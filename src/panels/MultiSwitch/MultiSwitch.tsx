@@ -49,8 +49,6 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
   );
 
   const classes = useStyles();
-
-  // const [originalValue, setOriginalValue] = useState('');
   const [originalName, setOriginalName] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
@@ -75,15 +73,6 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
   }, [multiSwitchTab]);
 
   const handleClick = (value: any) => {
-    // if (!_client.current) {
-    //   return;
-    // }
-    // if (_client.current.disconnected) {
-    //   _client.current.reconnect();
-    // }
-    // setIsRunning(true);
-    // publishMqttValue(value);
-    // setOriginalValue(value);
     onSetValue(value);
   };
 

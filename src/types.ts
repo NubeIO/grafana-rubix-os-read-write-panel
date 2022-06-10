@@ -36,11 +36,8 @@ export const PanelTypeLabel = {
   [PanelType.DISPLAY]: 'Display Panel',
   [PanelType.SLIDER]: 'Slider',
   [PanelType.MULTISWITCH]: 'Multi Switch',
+  [PanelType.SWITCH]: 'Switch',
 };
-
-export interface PanelOptions extends MultiSwitchOptions, SliderOptions, BackgroundOptions, ButtonOptions, BackgroundOptions {
-  panelType: PanelType;
-}
 
 export interface ButtonColorSettings {
   activeButtonColor: string;
@@ -98,4 +95,25 @@ export enum CategoryType {
   SwitchColorSettings = 'Switch Color Settings',
   ButtonColorSettings = 'Button Color Settings',
   SliderColorSettings = 'Slider Color Settings',
+}
+
+export interface SwitchOptions {
+  overrideSwitchColorSettings?: boolean;
+  switchTrueColor?: string;
+  switchFalseColor?: string;
+}
+
+export interface SwitchColorSettings {
+  switchTrueColor: string;
+  switchFalseColor: string;
+}
+
+export interface PanelOptions
+  extends MultiSwitchOptions,
+    ButtonOptions,
+    SliderOptions,
+    BackgroundOptions,
+    BackgroundOptions,
+    SwitchOptions {
+  panelType: PanelType;
 }
