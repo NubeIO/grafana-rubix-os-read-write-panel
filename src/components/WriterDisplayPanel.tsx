@@ -2,27 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _get from 'lodash.get';
 import { stylesFactory } from '@grafana/ui';
 import { css } from 'emotion';
-
-import { PanelData } from '@grafana/data';
-
-interface RubixServiceObject {
-  uuid: string;
-  name: string;
-}
-
-interface PhysicalWriterMap {
-  [writer_thing_uuid: string]: {
-    network: RubixServiceObject;
-    point: RubixServiceObject;
-    device: RubixServiceObject;
-  };
-}
-
-interface WriterDisplayPanelProps {
-  service: Function | any;
-  data: PanelData;
-  phyWriterMap: PhysicalWriterMap;
-}
+import { PanelProps } from '../types/panelProps';
 
 const getStyles = stylesFactory(() => {
   return {
@@ -38,13 +18,24 @@ const getStyles = stylesFactory(() => {
       color: #999;
       text-transform: uppercase;
     `,
+    warningText: css`
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #999;
+      text-transform: uppercase;
+      text-align: center;
+    `,
+    textCenter: css`
+      text-align: center;
+    `,
     value: css`
       font-size: 5em;
     `,
   };
 });
 
-export const WriterDisplayPanel: React.FC<WriterDisplayPanelProps> = (props: WriterDisplayPanelProps) => {
+export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
   const { data, phyWriterMap } = props;
   const styles = getStyles();
   const series = _get(data, 'series', []);
@@ -74,8 +65,17 @@ export const WriterDisplayPanel: React.FC<WriterDisplayPanelProps> = (props: Wri
     return `${writer.writer_thing_name} - ${writer.writer_thing_class}`;
   };
 
+  useEffect(() => {
+    updatedTime(new Date(timeFieldValue));
+    updateWriter(fieldValue);
+  }, [fieldValue, timeFieldValue]);
+
   if (!writer) {
-    return null;
+    return (
+      <div className={styles.container}>
+        <p className={styles.warningText}>Please! selected a writer from appropriate data source.</p>
+      </div>
+    );
   }
 
   return (
