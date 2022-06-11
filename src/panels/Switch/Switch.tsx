@@ -8,15 +8,13 @@ import { PanelProps } from '../../types/panelProps';
 
 import { withWriter, WriterHocProps } from '../../hoc/withWriters';
 
-interface SwitchPanelProps extends WriterHocProps, Omit<PanelProps, 'writable'> {
+interface SwitchPanelProps extends WriterHocProps, PanelProps {
   switchColorSettings: SwitchColorSettings;
 }
 
 function SwitchPanel(props: SwitchPanelProps) {
   // const { _client, publishMqttValue, isRunning, setIsRunning, dataValue, options } = props;
-  const { originalValue, onSetValue, options, isRunning } = props;
-
-  const { switchColorSettings } = options;
+  const { originalValue, onSetValue, options, isRunning, switchColorSettings } = props;
 
   const handleClick = () => {
     const value = !originalValue ? 1 : 0;

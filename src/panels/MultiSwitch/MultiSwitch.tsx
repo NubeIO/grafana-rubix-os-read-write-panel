@@ -1,5 +1,5 @@
 import { PanelProps } from '../../types/panelProps';
-import { MultiSwitchTabType, MultiSwitchType } from '../../types';
+import {  MultiSwitchType, MultiSwitchTabType } from '../../types';
 import React, { useEffect, useRef, useState } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
@@ -15,14 +15,13 @@ import MenuList from '@material-ui/core/MenuList';
 
 import { withWriter, WriterHocProps } from '../../hoc/withWriters';
 
-interface MultiSwitchProps extends WriterHocProps, Omit<PanelProps, 'writable'> {
-  multiSwitchTab?: MultiSwitchTabType;
+interface MultiSwitchProps extends WriterHocProps, PanelProps {
   customStyles: any;
+  multiSwitchTab: MultiSwitchTabType;
 }
 
 function MultiSwitchPanel(props: MultiSwitchProps) {
-  const { originalValue, currentValue, onSetValue, customStyles, options } = props;
-  const { multiSwitchTab } = options;
+  const { originalValue, currentValue, onSetValue, customStyles, multiSwitchTab } = props;
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       root: {

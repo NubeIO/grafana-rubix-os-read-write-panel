@@ -9,7 +9,7 @@ import WriterDisplayPanel from './components/WriterDisplayPanel';
 import SliderPanel from './components/SliderPanel';
 import MultiSwitchPanel from './panels/MultiSwitch';
 import Switch from './panels/Switch';
-import { PanelOptions, PanelType, ButtonColorSettings, SliderColorSettings, BISettingsProps } from './types';
+import { PanelOptions, PanelType, ButtonColorSettings, SliderColorSettings, BISettingsProps, SwitchColorSettings } from './types';
 import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
 
 interface Props extends PanelProps<PanelOptions> {}
@@ -72,6 +72,11 @@ const defaultSliderConfig = {
   sliderColor: '#303F9F',
 };
 
+const defaultSwitchColorSettings = {
+  switchTrueColor: '#52D869',
+  switchFalseColor: '#7E7E7E',
+};
+
 const defaultBiSettings = {
   opacity: 0,
   scale: 0,
@@ -88,6 +93,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   const [dataSource, setDataSource] = useState<any>({});
   const [isRunning, setIsRunning] = useState(false);
   const [currentPanelType, updatePanelType] = useState<string>(panelType);
+  const [switchColorSettings, setSwitchColorSettings] = useState<SwitchColorSettings>(defaultSwitchColorSettings);
   const [buttonStyle, setButtonStyle] = useState<ButtonColorSettings>(defaultButtonStyle);
   const [sliderColorSettings, setSliderColorSettings] = useState<SliderColorSettings>(defaultSliderConfig);
   const [_BISettings, setBISettings] = useState<BISettingsProps>(defaultBiSettings);
@@ -149,6 +155,10 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     if (res._BISettings) {
       setBISettings(res._BISettings);
     }
+    if(res.switchColorSettings) {
+      setSwitchColorSettings(switchColorSettings);
+    }
+
     if (res.sliderColorSettings) {
       setSliderColorSettings(res.sliderColorSettings);
     }
@@ -194,6 +204,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
             setIsRunning={setIsRunning}
             services={dataSource.services}
             fieldConfig={fieldConfig.defaults}
+            multiSwitchTab={options.multiSwitchTab}
             phyWriterMap={dataSource.flowNetworksPhyDevices}
           />
         )}
@@ -206,6 +217,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
             setIsRunning={setIsRunning}
             services={dataSource.services}
             fieldConfig={fieldConfig.defaults}
+            switchColorSettings={switchColorSettings}
             phyWriterMap={dataSource.flowNetworksPhyDevices}
           />
         )}
