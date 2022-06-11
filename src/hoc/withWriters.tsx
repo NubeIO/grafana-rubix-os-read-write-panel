@@ -7,24 +7,34 @@ import { PanelProps } from '../types/panelProps';
 import { PanelType } from '../types';
 
 export interface WriterHocProps extends PanelProps {
-  onSetValue: Function;
-  currentValue: String;
-  onResetValue: Function;
-  onWriteValue: Function;
-  originalValue: String;
+  onSetValue: any;
+  setCurrentValue: any;
+  currentValue: any;
+  onResetValue: any;
+  onWriteValue: any;
+  originalValue: any;
 }
 
-const presentValueResolver = (panelType: string, currentValue: any) => {
+const presentValueResolver = (panelType: string, currentValue: any, fieldConfig: any = {}) => {
   switch (panelType) {
     case PanelType.SWITCH:
       return /true$|1/gi.test(currentValue) ? 1 : 0;
+    case PanelType.NUMERICFIELDWRITER:
+      let currentValue_ = currentValue;
+      if (currentValue > (fieldConfig?.max || 100)) {
+        currentValue_ = fieldConfig?.max || 100;
+      }
+      if (currentValue < (fieldConfig?.min || 0)) {
+        currentValue_ = fieldConfig?.min || 0;
+      }
+      return currentValue_;
     default:
       return currentValue;
   }
 };
 
 export const withWriter = (ComposedComponent: any) => (props: any) => {
-  const { setIsRunning, services, data, panelType } = props;
+  const { setIsRunning, services, data, panelType, fieldConfig } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
 
@@ -34,7 +44,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   useEffect(() => {
     if (writerValue) {
       const { present_value } = writerValue;
-      let value = presentValueResolver(panelType, present_value);
+      let value = presentValueResolver(panelType, present_value, fieldConfig);
       setOriginalValue(value);
       setCurrentValue(value);
       setIsRunning(false);
@@ -59,6 +69,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     return services?.rfWriterActionService
       ?.createPointPriorityArray(writerUUID, payload)
       .then(() => {
+        console.log(payload, value);
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
@@ -78,6 +89,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       onResetValue={onResetValue}
       onWriteValue={onWriteValue}
       originalValue={originalValue}
-    />
+      setCurrentValue={setCurrentValue}
+      />
   );
 };

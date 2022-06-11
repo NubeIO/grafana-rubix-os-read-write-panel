@@ -10,6 +10,7 @@ import SliderPanel from './components/SliderPanel';
 import MultiSwitchPanel from './panels/MultiSwitch';
 import Switch from './panels/Switch';
 import { PanelOptions, PanelType, ButtonColorSettings, SliderColorSettings, BISettingsProps } from './types';
+import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
 
 interface Props extends PanelProps<PanelOptions> {}
 
@@ -198,6 +199,18 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
         )}
         {renderPanelType(PanelType.SWITCH) && (
           <Switch
+            data={data}
+            options={options}
+            isRunning={isRunning}
+            customStyles={customStyles}
+            setIsRunning={setIsRunning}
+            services={dataSource.services}
+            fieldConfig={fieldConfig.defaults}
+            phyWriterMap={dataSource.flowNetworksPhyDevices}
+          />
+        )}
+        {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
+          <NumericFieldWriter
             data={data}
             options={options}
             isRunning={isRunning}

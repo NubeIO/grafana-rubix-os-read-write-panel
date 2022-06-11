@@ -20,6 +20,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
             { value: PanelType.DISPLAY, label: PanelTypeLabel[PanelType.DISPLAY] },
             { value: PanelType.MULTISWITCH, label: PanelTypeLabel[PanelType.MULTISWITCH] },
             { value: PanelType.SWITCH, label: PanelTypeLabel[PanelType.SWITCH] },
+            { value: PanelType.NUMERICFIELDWRITER, label: PanelTypeLabel[PanelType.NUMERICFIELDWRITER]}
           ],
         },
         defaultValue: PanelType.DISPLAY,

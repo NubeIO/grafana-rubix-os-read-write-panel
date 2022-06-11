@@ -30,6 +30,7 @@ export enum PanelType {
   SLIDER = 'slider',
   SWITCH = 'switch',
   SINGLESTAT = 'singleStat',
+  NUMERICFIELDWRITER = 'numericFieldWriter',
 }
 
 export const PanelTypeLabel = {
@@ -37,6 +38,7 @@ export const PanelTypeLabel = {
   [PanelType.SLIDER]: 'Slider',
   [PanelType.MULTISWITCH]: 'Multi Switch',
   [PanelType.SWITCH]: 'Switch',
+  [PanelType.NUMERICFIELDWRITER]: 'Numeric Field'
 };
 
 export interface ButtonColorSettings {
@@ -108,12 +110,17 @@ export interface SwitchColorSettings {
   switchFalseColor: string;
 }
 
+export interface NumericOptions {
+  step?: number;
+}
+
 export interface PanelOptions
   extends MultiSwitchOptions,
     ButtonOptions,
     SliderOptions,
     BackgroundOptions,
     BackgroundOptions,
+    NumericOptions,
     SwitchOptions {
   panelType: PanelType;
 }
