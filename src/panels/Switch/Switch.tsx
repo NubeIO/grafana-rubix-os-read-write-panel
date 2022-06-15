@@ -18,8 +18,6 @@ function SwitchPanel(props: SwitchPanelProps) {
 
   const handleClick = () => {
     const value = !originalValue ? 1 : 0;
-    console.log('toggleValue', value);
-    console.log('originalValue', value);
     onSetValue(value);
   };
 

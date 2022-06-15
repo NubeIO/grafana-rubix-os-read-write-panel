@@ -69,7 +69,6 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     return services?.rfWriterActionService
       ?.createPointPriorityArray(writerUUID, payload)
       .then(() => {
-        console.log(payload, value);
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {

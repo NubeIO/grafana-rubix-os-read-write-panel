@@ -133,20 +133,27 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     if (isDatasourceConfigured) {
       return;
     }
-    getDataSourceSrv()
-      .get()
-      .then(res => {
-        if (res.meta.id === RUBIX_SERVICE_DATASOURCE_ID) {
-          // correctly configured
-          setDataSource(res);
-          changeIsDatasourceConfigured(true);
-          updateUiConfig(res);
-        } else {
-          changeIsDatasourceConfigured(false);
-        }
-      }).catch(err => {
-        console.error(err);
-      })
+    const datasources = data?.request?.targets.map(x => x.datasource).filter(val => val);
+
+    if (Array.isArray(datasources) && datasources.length > 0) {
+      datasources.map(datasource => {
+        return getDataSourceSrv()
+          .get(datasource)
+          .then(res => {
+            if (res.meta.id === RUBIX_SERVICE_DATASOURCE_ID) {
+              // correctly configured
+              setDataSource(res);
+              changeIsDatasourceConfigured(true);
+              updateUiConfig(res);
+            } else {
+              changeIsDatasourceConfigured(false);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      });
+    }
   }, [data]);
 
   const computedWrapperClassname = cx(
