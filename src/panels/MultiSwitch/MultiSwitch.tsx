@@ -1,5 +1,5 @@
 import { PanelProps } from '../../types/panelProps';
-import {  MultiSwitchType, MultiSwitchTabType } from '../../types';
+import { MultiSwitchType, MultiSwitchTabType } from '../../types';
 import React, { useEffect, useRef, useState } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';

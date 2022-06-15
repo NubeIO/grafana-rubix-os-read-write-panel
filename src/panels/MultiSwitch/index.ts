@@ -1,2 +1,2 @@
-import MultiSwitch  from './MultiSwitch'
-export default MultiSwitch
+import MultiSwitch from './MultiSwitch';
+export default MultiSwitch;

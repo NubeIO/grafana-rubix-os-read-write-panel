@@ -90,6 +90,6 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       onWriteValue={onWriteValue}
       originalValue={originalValue}
       setCurrentValue={setCurrentValue}
-      />
+    />
   );
 };
