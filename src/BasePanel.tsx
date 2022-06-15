@@ -9,7 +9,14 @@ import WriterDisplayPanel from './components/WriterDisplayPanel';
 import SliderPanel from './components/SliderPanel';
 import MultiSwitchPanel from './panels/MultiSwitch';
 import Switch from './panels/Switch';
-import { PanelOptions, PanelType, ButtonColorSettings, SliderColorSettings, BISettingsProps, SwitchColorSettings } from './types';
+import {
+  PanelOptions,
+  PanelType,
+  ButtonColorSettings,
+  SliderColorSettings,
+  BISettingsProps,
+  SwitchColorSettings,
+} from './types';
 import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
 
 interface Props extends PanelProps<PanelOptions> {}
@@ -129,7 +136,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     getDataSourceSrv()
       .get()
       .then(res => {
-        if (res.meta.id == RUBIX_SERVICE_DATASOURCE_ID) {
+        if (res.meta.id === RUBIX_SERVICE_DATASOURCE_ID) {
           // correctly configured
           setDataSource(res);
           changeIsDatasourceConfigured(true);
@@ -155,7 +162,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     if (res._BISettings) {
       setBISettings(res._BISettings);
     }
-    if(res.switchColorSettings) {
+    if (res.switchColorSettings) {
       setSwitchColorSettings(switchColorSettings);
     }
 

@@ -38,7 +38,7 @@ export const PanelTypeLabel = {
   [PanelType.SLIDER]: 'Slider',
   [PanelType.MULTISWITCH]: 'Multi Switch',
   [PanelType.SWITCH]: 'Switch',
-  [PanelType.NUMERICFIELDWRITER]: 'Numeric Field'
+  [PanelType.NUMERICFIELDWRITER]: 'Numeric Field',
 };
 
 export interface ButtonColorSettings {
