@@ -144,7 +144,9 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
         } else {
           changeIsDatasourceConfigured(false);
         }
-      });
+      }).catch(err => {
+        console.error(err);
+      })
   }, [data]);
 
   const computedWrapperClassname = cx(
