@@ -29,7 +29,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         id: 'multiSwitchTab',
         path: 'multiSwitchTab',
         name: 'Number of Count',
-        category: [PanelType.MULTISWITCH],
+        category: [CategoryType.MultiSwitchSettings],
         editor: props => {
           return <MultiSwitchTab {...props} />;
         },

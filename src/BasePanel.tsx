@@ -61,7 +61,7 @@ const getCustomStyles = ({ options, buttonStyle, sliderColorSettings }: any) => 
         : `${buttonStyle?.inactiveButtonTextColor} !important`,
     },
     fontSize: '16px',
-    height: '40px',
+    // height: '40px',
   },
   slider: {
     color: sliderColorSettings.sliderColor,
