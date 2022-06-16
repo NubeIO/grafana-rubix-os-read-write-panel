@@ -2,12 +2,22 @@ import { PanelData } from '@grafana/data';
 import _get from 'lodash.get';
 import { DataFieldKeyI } from '../types';
 
+const transformToNumericValue = (value: any): Number | String => {
+  let val = +value;
+
+  if (isNaN(val)) {
+    return value;
+  }
+
+  return val;
+};
+
 export const constructWriterPayload = (key: string, value: string) => {
   return {
     action: 'write',
     ask_refresh: true,
     priority: {
-      [key]: value,
+      [key]: transformToNumericValue(value),
     },
   };
 };
