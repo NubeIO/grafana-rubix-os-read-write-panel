@@ -5,6 +5,7 @@ import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Slider } from '@material-ui/core';
 import * as writerUiService from '../services/writerUiService';
 import { AppEvents } from '@grafana/data';
+import { Spinner } from '@grafana/ui';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
 
@@ -18,6 +19,7 @@ function getStyles(customStyles: any) {
   return makeStyles(() =>
     createStyles({
       slider: {
+        position: 'relative',
         flexDirection: 'column',
         padding: '10px',
         height: '100%',
@@ -26,6 +28,12 @@ function getStyles(customStyles: any) {
         justifyContent: 'center',
       },
       button: { ...customStyles.button, width: '70px' },
+      spinnerContainer: {
+        top: '0',
+        right: '0',
+        paddingRight: '9px',
+        position: 'absolute',
+      },
     })
   );
 }
@@ -53,7 +61,6 @@ export default function SliderPanel(props: SliderProps) {
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
 
   const onSetValue = () => {
-    setIsRunning(true);
     setOriginalValue(currentValue);
     onWriteValue(currentValue);
   };
@@ -63,7 +70,6 @@ export default function SliderPanel(props: SliderProps) {
       const { present_value } = writerValue;
       setOriginalValue(present_value);
       setCurrentValue(present_value);
-      setIsRunning(false);
     }
   }, [writerValue]);
 
@@ -75,6 +81,7 @@ export default function SliderPanel(props: SliderProps) {
       return Promise.reject('Current priority not selected.');
     }
     const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
+    setIsRunning(true);
 
     return services?.rfWriterActionService
       ?.createPointPriorityArray(writerUUID, payload)
@@ -83,6 +90,9 @@ export default function SliderPanel(props: SliderProps) {
       })
       .catch(() => {
         appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
+      })
+      .finally(() => {
+        setIsRunning(false);
       });
   };
 
@@ -130,8 +140,9 @@ export default function SliderPanel(props: SliderProps) {
 
   return (
     <div className={classes.slider}>
+      {isRunning && <Spinner className={classes.spinnerContainer}></Spinner>}
       <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-        <Button onClick={onSetValue} className={classes.button}>
+        <Button disabled={isRunning} onClick={onSetValue} className={classes.button}>
           Set
         </Button>
         <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
