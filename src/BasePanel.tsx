@@ -5,8 +5,8 @@ import { PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { stylesFactory } from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
-import WriterDisplayPanel from './components/WriterDisplayPanel';
-import SliderPanel from './components/SliderPanel';
+import WriterDisplayPanel from './panels/Display/WriterDisplayPanel';
+import SliderPanel from './panels/Slider/SliderPanel';
 import MultiSwitchPanel from './panels/MultiSwitch';
 import Switch from './panels/Switch';
 import {

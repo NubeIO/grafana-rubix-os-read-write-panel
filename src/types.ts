@@ -94,7 +94,7 @@ export enum CategoryType {
   Background = 'Background',
   TextSettings = 'Text Settings',
   NumericSettings = 'Numeric Settings',
-  MultiSwitchSettings = "Multi Switch Settings",
+  MultiSwitchSettings = 'Multi Switch Settings',
   SwitchColorSettings = 'Switch Color Settings',
   ButtonColorSettings = 'Button Color Settings',
   SliderColorSettings = 'Slider Color Settings',

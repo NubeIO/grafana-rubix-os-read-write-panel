@@ -3,12 +3,11 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Slider } from '@material-ui/core';
-import { Spinner } from '@grafana/ui';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
 
-import { withWriter, WriterHocProps } from '../hoc/withWriters';
-import { PanelProps } from '../types/panelProps';
+import { withWriter, WriterHocProps } from '../../hoc/withWriters';
+import { PanelProps } from '../../types/panelProps';
 
 interface SliderProps extends WriterHocProps, PanelProps {
   customStyles: any;
@@ -59,51 +58,6 @@ function SliderPanel(props: SliderProps) {
   const classes = useStyles();
 
   let [_CustomSlider, setCustomSlider] = useState<any>(null);
-  // const [originalValue, setOriginalValue] = useState(0);
-  // const [currentValue, setCurrentValue] = useState(0);
-
-  // const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
-  // const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
-
-  // const onSetValue = () => {
-  //   setOriginalValue(currentValue);
-  //   onWriteValue(currentValue);
-  // };
-
-  // useEffect(() => {
-  //   if (writerValue) {
-  //     const { present_value } = writerValue;
-  //     setOriginalValue(present_value);
-  //     setCurrentValue(present_value);
-  //   }
-  // }, [writerValue]);
-
-  // const onWriteValue = (value: any) => {
-  //   const selectedPriorityKey = currentPriority && currentPriority.name;
-  //   const writerUUID = writerValue.uuid;
-
-  //   if (!selectedPriorityKey) {
-  //     return Promise.reject('Current priority not selected.');
-  //   }
-  //   const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
-  //   setIsRunning(true);
-
-  //   return services?.rfWriterActionService
-  //     ?.createPointPriorityArray(writerUUID, payload)
-  //     .then(() => {
-  //       appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
-  //     })
-  //     .catch(() => {
-  //       appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
-  //     })
-  //     .finally(() => {
-  //       setIsRunning(false);
-  //     });
-  // };
-
-  // const onResetValue = () => {
-  //   setCurrentValue(originalValue);
-  // };
 
   useEffect(() => {
     setCustomSlider(
