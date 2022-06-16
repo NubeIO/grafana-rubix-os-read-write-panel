@@ -2,7 +2,7 @@ import { PanelData } from '@grafana/data';
 import _get from 'lodash.get';
 import { DataFieldKeyI } from '../types';
 
-const transformToNumericValue = (value: any): Number | String => {
+const transformToNumericValue = (value: any): number | string => {
   let val = +value;
 
   if (isNaN(val)) {
