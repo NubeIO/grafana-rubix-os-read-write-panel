@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import * as writerUiService from '../services/writerUiService';
 import { AppEvents } from '@grafana/data';
+import { Spinner } from '@grafana/ui';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+
+import { PanelType } from '../types';
+import { PanelProps } from '../types/panelProps';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
-import { PanelProps } from '../types/panelProps';
-import { PanelType } from '../types';
+import * as writerUiService from '../services/writerUiService';
 
 export interface WriterHocProps extends PanelProps {
   onSetValue: any;
@@ -33,10 +36,33 @@ const presentValueResolver = (panelType: string, currentValue: any, fieldConfig:
   }
 };
 
+function getStyles() {
+  return makeStyles(() =>
+    createStyles({
+      container: {
+        position: 'relative',
+        flexDirection: 'column',
+        padding: '10px',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      spinnerContainer: {
+        top: '-32px',
+        right: '0px',
+        position: 'absolute',
+      },
+    })
+  );
+}
+
 export const withWriter = (ComposedComponent: any) => (props: any) => {
-  const { setIsRunning, services, data, panelType, fieldConfig } = props;
+  const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
+  const useStyles = getStyles();
+  const classes = useStyles();
 
   const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
@@ -47,12 +73,10 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       let value = presentValueResolver(panelType, present_value, fieldConfig);
       setOriginalValue(value);
       setCurrentValue(value);
-      setIsRunning(false);
     }
   }, [writerValue]);
 
   const onSetValue = (value: any) => {
-    setIsRunning(true);
     setOriginalValue(value);
     onWriteValue(value);
   };
@@ -66,6 +90,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     }
     const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
 
+    setIsRunning(true);
     return services?.rfWriterActionService
       ?.createPointPriorityArray(writerUUID, payload)
       .then(() => {
@@ -73,6 +98,9 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       })
       .catch(() => {
         appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
+      })
+      .finally(() => {
+        setIsRunning(false);
       });
   };
 
@@ -81,14 +109,18 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   };
 
   return (
-    <ComposedComponent
-      {...props}
-      onSetValue={onSetValue}
-      currentValue={currentValue}
-      onResetValue={onResetValue}
-      onWriteValue={onWriteValue}
-      originalValue={originalValue}
-      setCurrentValue={setCurrentValue}
-    />
+    <div className={classes.container}>
+      {isRunning && <Spinner className={classes.spinnerContainer}></Spinner>}
+
+      <ComposedComponent
+        {...props}
+        onSetValue={onSetValue}
+        currentValue={currentValue}
+        onResetValue={onResetValue}
+        onWriteValue={onWriteValue}
+        originalValue={originalValue}
+        setCurrentValue={setCurrentValue}
+      />
+    </div>
   );
 };

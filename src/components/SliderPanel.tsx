@@ -29,8 +29,8 @@ function getStyles(customStyles: any) {
       },
       button: { ...customStyles.button, width: '70px' },
       spinnerContainer: {
-        top: '0',
-        right: '0',
+        top: '-32px',
+        right: '-32px',
         paddingRight: '9px',
         position: 'absolute',
       },

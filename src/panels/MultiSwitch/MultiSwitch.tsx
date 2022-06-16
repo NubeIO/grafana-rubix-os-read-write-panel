@@ -56,9 +56,10 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
 
   useEffect(() => {
     if (multiSwitchTab && multiSwitchTab.data) {
+
       Object.keys(multiSwitchTab.data).forEach(key => {
-        if ('' + multiSwitchTab.data[+key].value === currentValue) {
-          setOriginalName('' + currentValue);
+        if (+multiSwitchTab.data[+key].value === currentValue) {
+          setOriginalName(currentValue);
           setSelectedIndex(+key);
         }
       });
@@ -83,7 +84,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
         return (
           <Button
             className={classes.button}
-            disabled={originalValue === sw.value}
+            disabled={''+originalValue === ''+sw.value}
             onClick={() => handleClick(sw.value)}
           >
             {sw.name}
