@@ -13,7 +13,6 @@ interface SwitchPanelProps extends WriterHocProps, PanelProps {
 }
 
 function SwitchPanel(props: SwitchPanelProps) {
-  // const { _client, publishMqttValue, isRunning, setIsRunning, dataValue, options } = props;
   const { originalValue, onSetValue, options, isRunning, switchColorSettings } = props;
 
   const handleClick = () => {

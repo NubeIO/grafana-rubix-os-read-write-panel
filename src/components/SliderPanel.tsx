@@ -3,15 +3,14 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Slider } from '@material-ui/core';
-import * as writerUiService from '../services/writerUiService';
-import { AppEvents } from '@grafana/data';
 import { Spinner } from '@grafana/ui';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
 
+import { withWriter, WriterHocProps } from '../hoc/withWriters';
 import { PanelProps } from '../types/panelProps';
 
-interface SliderProps extends PanelProps {
+interface SliderProps extends WriterHocProps, PanelProps {
   customStyles: any;
 }
 
@@ -19,7 +18,7 @@ function getStyles(customStyles: any) {
   return makeStyles(() =>
     createStyles({
       slider: {
-        position: 'relative',
+        width: '100%',
         flexDirection: 'column',
         padding: '10px',
         height: '100%',
@@ -28,12 +27,6 @@ function getStyles(customStyles: any) {
         justifyContent: 'center',
       },
       button: { ...customStyles.button, width: '70px' },
-      spinnerContainer: {
-        top: '-32px',
-        right: '-32px',
-        paddingRight: '9px',
-        position: 'absolute',
-      },
     })
   );
 }
@@ -48,57 +41,69 @@ const ThumbComponent = (props: any) => {
   );
 };
 
-export default function SliderPanel(props: SliderProps) {
-  const { customStyles, fieldConfig, isRunning, services, data, setIsRunning, options } = props;
+function SliderPanel(props: SliderProps) {
+  // const { customStyles, fieldConfig, isRunning, services, data, setIsRunning, options } = props;
+  const {
+    currentValue,
+    originalValue,
+    setCurrentValue,
+    onSetValue,
+    customStyles,
+    options,
+    isRunning,
+    onResetValue,
+    fieldConfig,
+  } = props;
+
   const useStyles = getStyles(customStyles);
   const classes = useStyles();
 
   let [_CustomSlider, setCustomSlider] = useState<any>(null);
-  const [originalValue, setOriginalValue] = useState(0);
-  const [currentValue, setCurrentValue] = useState(0);
+  // const [originalValue, setOriginalValue] = useState(0);
+  // const [currentValue, setCurrentValue] = useState(0);
 
-  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
-  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
+  // const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
+  // const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
 
-  const onSetValue = () => {
-    setOriginalValue(currentValue);
-    onWriteValue(currentValue);
-  };
+  // const onSetValue = () => {
+  //   setOriginalValue(currentValue);
+  //   onWriteValue(currentValue);
+  // };
 
-  useEffect(() => {
-    if (writerValue) {
-      const { present_value } = writerValue;
-      setOriginalValue(present_value);
-      setCurrentValue(present_value);
-    }
-  }, [writerValue]);
+  // useEffect(() => {
+  //   if (writerValue) {
+  //     const { present_value } = writerValue;
+  //     setOriginalValue(present_value);
+  //     setCurrentValue(present_value);
+  //   }
+  // }, [writerValue]);
 
-  const onWriteValue = (value: any) => {
-    const selectedPriorityKey = currentPriority && currentPriority.name;
-    const writerUUID = writerValue.uuid;
+  // const onWriteValue = (value: any) => {
+  //   const selectedPriorityKey = currentPriority && currentPriority.name;
+  //   const writerUUID = writerValue.uuid;
 
-    if (!selectedPriorityKey) {
-      return Promise.reject('Current priority not selected.');
-    }
-    const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
-    setIsRunning(true);
+  //   if (!selectedPriorityKey) {
+  //     return Promise.reject('Current priority not selected.');
+  //   }
+  //   const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
+  //   setIsRunning(true);
 
-    return services?.rfWriterActionService
-      ?.createPointPriorityArray(writerUUID, payload)
-      .then(() => {
-        appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
-      })
-      .catch(() => {
-        appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
-      })
-      .finally(() => {
-        setIsRunning(false);
-      });
-  };
+  //   return services?.rfWriterActionService
+  //     ?.createPointPriorityArray(writerUUID, payload)
+  //     .then(() => {
+  //       appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
+  //     })
+  //     .catch(() => {
+  //       appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
+  //     })
+  //     .finally(() => {
+  //       setIsRunning(false);
+  //     });
+  // };
 
-  const onResetValue = () => {
-    setCurrentValue(originalValue);
-  };
+  // const onResetValue = () => {
+  //   setCurrentValue(originalValue);
+  // };
 
   useEffect(() => {
     setCustomSlider(
@@ -140,9 +145,8 @@ export default function SliderPanel(props: SliderProps) {
 
   return (
     <div className={classes.slider}>
-      {isRunning && <Spinner className={classes.spinnerContainer}></Spinner>}
       <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-        <Button disabled={isRunning} onClick={onSetValue} className={classes.button}>
+        <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
           Set
         </Button>
         <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
@@ -172,3 +176,5 @@ export default function SliderPanel(props: SliderProps) {
     </div>
   );
 }
+
+export default withWriter(SliderPanel);
