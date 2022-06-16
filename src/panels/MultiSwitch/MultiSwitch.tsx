@@ -56,10 +56,8 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
 
   useEffect(() => {
     if (multiSwitchTab && multiSwitchTab.data) {
-      console.log('inside here multiSwitchTab', multiSwitchTab, currentValue);
 
       Object.keys(multiSwitchTab.data).forEach(key => {
-        console.log('value>>>>', +multiSwitchTab.data[+key].value === currentValue);
         if (+multiSwitchTab.data[+key].value === currentValue) {
           setOriginalName(currentValue);
           setSelectedIndex(+key);

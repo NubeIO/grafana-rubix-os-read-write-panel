@@ -68,7 +68,6 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
 
   useEffect(() => {
-    console.log('initially inside', writerValue);
     if (writerValue) {
       const { present_value } = writerValue;
       let value = presentValueResolver(panelType, present_value, fieldConfig);
