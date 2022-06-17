@@ -62,7 +62,7 @@ function NumericFieldWriterPanel(props: SliderProps) {
     <div className={classes.root}>
       <div className={classes.line}>
         <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-          <Button onClick={() => onSetValue(currentValue)} className={classes.button}>
+          <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
             Set
           </Button>
           <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
