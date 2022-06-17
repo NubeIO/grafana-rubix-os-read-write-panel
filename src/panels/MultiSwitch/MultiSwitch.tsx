@@ -21,7 +21,7 @@ interface MultiSwitchProps extends WriterHocProps, PanelProps {
 }
 
 function MultiSwitchPanel(props: MultiSwitchProps) {
-  const { originalValue, currentValue, onSetValue, customStyles, multiSwitchTab } = props;
+  const { originalValue, isRunning, currentValue, onSetValue, customStyles, multiSwitchTab } = props;
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       root: {
@@ -83,8 +83,13 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
         return (
           <Button
             className={classes.button}
+            onClick={() => {
+              if (isRunning) {
+                return;
+              }
+              handleClick(sw.value);
+            }}
             disabled={'' + originalValue === '' + sw.value}
-            onClick={() => handleClick(sw.value)}
           >
             {sw.name}
           </Button>
