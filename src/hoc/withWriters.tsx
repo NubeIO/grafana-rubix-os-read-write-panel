@@ -49,8 +49,8 @@ function getStyles() {
         justifyContent: 'center',
       },
       spinnerContainer: {
-        top: '-32px',
-        right: '0px',
+        top: '-16px',
+        right: '0',
         position: 'absolute',
       },
     })
@@ -61,11 +61,20 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
+  const dataLoadingState = data.state;
   const useStyles = getStyles();
   const classes = useStyles();
 
   const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
+
+  useEffect(() => {
+    if (dataLoadingState == 'Loading') {
+      setIsRunning(true);
+    } else {
+      setIsRunning(false);
+    }
+  }, [dataLoadingState]);
 
   useEffect(() => {
     if (writerValue) {
@@ -101,7 +110,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
-        appEvents.emit(AppEvents.alertError, ['zzzzzzzzzUnsucessful to set writer value.']);
+        appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
       })
       .finally(() => {
         setIsRunning(false);
@@ -114,7 +123,11 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
 
   return (
     <div className={classes.container}>
-      {isRunning && <Spinner className={classes.spinnerContainer}></Spinner>}
+      {isRunning && (
+        <div className={classes.spinnerContainer}>
+          <Spinner size={12} className={classes.spinnerContainer}></Spinner>
+        </div>
+      )}
 
       <ComposedComponent
         {...props}

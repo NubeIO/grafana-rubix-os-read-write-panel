@@ -3,6 +3,7 @@ import _get from 'lodash.get';
 import { stylesFactory } from '@grafana/ui';
 import { css } from 'emotion';
 import { PanelProps } from '../../types/panelProps';
+import { withWriter } from '../../hoc/withWriters';
 
 const getStyles = stylesFactory(() => {
   return {
@@ -10,6 +11,7 @@ const getStyles = stylesFactory(() => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
     `,
     title: css`
       margin-bottom: 8px;
@@ -96,4 +98,4 @@ export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
   );
 };
 
-export default WriterDisplayPanel;
+export default withWriter(WriterDisplayPanel);
