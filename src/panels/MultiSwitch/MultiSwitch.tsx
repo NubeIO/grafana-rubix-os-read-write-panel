@@ -83,8 +83,13 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
         return (
           <Button
             className={classes.button}
-            disabled={isRunning}
-            onClick={() => handleClick(sw.value)}
+            onClick={() => {
+              if (isRunning) {
+                return;
+              }
+              handleClick(sw.value);
+            }}
+            disabled={'' + originalValue === '' + sw.value}
           >
             {sw.name}
           </Button>
