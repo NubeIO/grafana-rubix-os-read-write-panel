@@ -90,14 +90,18 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     }
     const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
 
-    setIsRunning(true);
+    if (typeof services?.rfWriterActionService?.createPointPriorityArray === 'function') {
+      setIsRunning(true);
+    } else {
+      setIsRunning(false);
+    }
     return services?.rfWriterActionService
       ?.createPointPriorityArray(writerUUID, payload)
       .then(() => {
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
-        appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
+        appEvents.emit(AppEvents.alertError, ['zzzzzzzzzUnsucessful to set writer value.']);
       })
       .finally(() => {
         setIsRunning(false);
