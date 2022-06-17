@@ -84,9 +84,17 @@ function SwitchPanel(props: SwitchPanelProps) {
     );
   });
 
+  const isTruthyVal = (val: any) => {
+    const value = +val;
+    if (isNaN(value)) {
+      return !!val;
+    }
+    return value !== 0;
+  };
+
   return (
     <div className={styles.switchWrapper}>
-      <IOSSwitch checked={+originalValue !== 0} disabled={isRunning} onClick={handleClick} />
+      <IOSSwitch checked={isTruthyVal(originalValue)} disabled={isRunning} onClick={handleClick} />
     </div>
   );
 }
