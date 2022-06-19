@@ -69,7 +69,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
 
   useEffect(() => {
-    if (dataLoadingState == 'Loading') {
+    if (dataLoadingState === 'Loading') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
