@@ -1,7 +1,7 @@
 {
   "name": "nubeio-grafana-rubix-service-read-write-panel",
-  "version": "1.2.0",
-  "description": "Grafana Rubix Service R/W Panel",
+  "version": "0.0.1",
+  "description": "Rubix Service R/W Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
