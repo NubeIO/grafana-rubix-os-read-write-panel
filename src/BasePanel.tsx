@@ -18,6 +18,13 @@ import {
   SwitchColorSettings,
 } from './types';
 import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
+import { StylesProvider, createGenerateClassName } from '@material-ui/core/styles';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'rs',
+  disableGlobal: true,
+  seed: 'rs',
+});
 
 interface Props extends PanelProps<PanelOptions> {}
 
@@ -186,7 +193,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <>
+    <StylesProvider generateClassName={generateClassName}>
       <div className={computedWrapperClassname}>
         {renderPanelType(PanelType.DISPLAY) && (
           <WriterDisplayPanel
@@ -269,6 +276,6 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
         )}
         {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
       </div>
-    </>
+    </StylesProvider>
   );
 };
