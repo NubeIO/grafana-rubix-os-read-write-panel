@@ -61,20 +61,11 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
-  const dataLoadingState = data.state;
   const useStyles = getStyles();
   const classes = useStyles();
 
   const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
-
-  useEffect(() => {
-    if (dataLoadingState === 'Loading') {
-      setIsRunning(true);
-    } else {
-      setIsRunning(false);
-    }
-  }, [dataLoadingState]);
 
   useEffect(() => {
     if (writerValue) {
