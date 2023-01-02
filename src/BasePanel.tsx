@@ -1,4 +1,3 @@
-import _get from 'lodash.get';
 import React, { useEffect, useState } from 'react';
 import { css, cx } from 'emotion';
 import { PanelProps } from '@grafana/data';
@@ -10,15 +9,15 @@ import SliderPanel from './panels/Slider/SliderPanel';
 import MultiSwitchPanel from './panels/MultiSwitch';
 import Switch from './panels/Switch';
 import {
+  BISettingsProps,
+  ButtonColorSettings,
   PanelOptions,
   PanelType,
-  ButtonColorSettings,
   SliderColorSettings,
-  BISettingsProps,
   SwitchColorSettings,
 } from './types';
 import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
-import { StylesProvider, createGenerateClassName } from '@material-ui/core/styles';
+import { createGenerateClassName, StylesProvider } from '@material-ui/core/styles';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'rs',

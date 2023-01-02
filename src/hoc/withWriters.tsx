@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppEvents } from '@grafana/data';
 import { Spinner } from '@grafana/ui';
 import { createStyles, makeStyles } from '@material-ui/core/styles';

@@ -4,8 +4,6 @@ import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Slider } from '@material-ui/core';
 // @ts-ignore
-import appEvents from 'grafana/app/core/app_events';
-
 import { withWriter, WriterHocProps } from '../../hoc/withWriters';
 import { PanelProps } from '../../types/panelProps';
 

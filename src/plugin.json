@@ -8,7 +8,10 @@
       "name": "Nube iO",
       "url": "https://nubeio.com"
     },
-    "keywords": ["rubix service", "read write panel"],
+    "keywords": [
+      "rubix service",
+      "read write panel"
+    ],
     "logos": {
       "small": "assets/img/logo.svg",
       "large": "assets/img/logo.svg"

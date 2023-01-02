@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PanelOptions, PanelType, PanelTypeLabel, CategoryType } from './types';
+import { CategoryType, PanelOptions, PanelType, PanelTypeLabel } from './types';
 import { SliderEditor } from './components/SliderEditor';
 import { PanelPlugin } from '@grafana/data';
 import { BasePanel } from './BasePanel';

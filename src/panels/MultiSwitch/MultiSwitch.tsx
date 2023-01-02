@@ -1,9 +1,9 @@
 import { PanelProps } from '../../types/panelProps';
-import { MultiSwitchType, MultiSwitchTabType } from '../../types';
+import { MultiSwitchTabType, MultiSwitchType } from '../../types';
 import React, { useEffect, useRef, useState } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grid from '@material-ui/core/Grid';
