@@ -15,7 +15,7 @@ on:
 
 env:
   NODE_VERSION: 14
-  CURRENT_REPO: grafana-rubix-service-read-write-panel
+  CURRENT_REPO: grafana-flow-framework-read-write-panel
 
 jobs:
   context:

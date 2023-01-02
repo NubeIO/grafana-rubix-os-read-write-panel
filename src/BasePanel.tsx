@@ -74,7 +74,7 @@ const getCustomStyles = ({ options, buttonStyle, sliderColorSettings }: any) => 
   },
 });
 
-const RUBIX_SERVICE_DATASOURCE_ID = 'nubeio-rubix-service-data-source';
+const FLOW_FRAMEWORK_DATASOURCE_ID = 'nubeio-flow-framework-data-source';
 const defaultButtonStyle = {
   activeButtonColor: '#303F9F',
   activeButtonTextColor: '#E0E0E0',
@@ -146,7 +146,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
         return getDataSourceSrv()
           .get(datasource)
           .then(res => {
-            if (res.meta.id === RUBIX_SERVICE_DATASOURCE_ID) {
+            if (res.meta.id === FLOW_FRAMEWORK_DATASOURCE_ID) {
               // correctly configured
               setDataSource(res);
               changeIsDatasourceConfigured(true);
