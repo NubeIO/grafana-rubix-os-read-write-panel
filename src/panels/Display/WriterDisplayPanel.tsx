@@ -27,6 +27,7 @@ const getStyles = stylesFactory(() => {
       color: #999;
       text-transform: uppercase;
       text-align: center;
+      width: 100%;
     `,
     textCenter: css`
       text-align: center;
@@ -75,7 +76,7 @@ export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
   if (!writer) {
     return (
       <div className={styles.container}>
-        <p className={styles.warningText}>Please! selected a writer from appropriate data source.</p>
+        <p className={styles.warningText}>Please select a writer from appropriate data source!</p>
       </div>
     );
   }

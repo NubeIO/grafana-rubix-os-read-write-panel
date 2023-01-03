@@ -86,6 +86,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     const writerUUID = writerValue.uuid;
 
     if (!selectedPriorityKey) {
+      appEvents.emit(AppEvents.alertError, ['Current priority not selected!']);
       return Promise.reject('Current priority not selected.');
     }
     const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
@@ -101,7 +102,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
-        appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
+        appEvents.emit(AppEvents.alertError, ['Unsuccessful to set writer value!']);
       })
       .finally(() => {
         setIsRunning(false);
