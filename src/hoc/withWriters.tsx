@@ -61,20 +61,46 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
+  const [isEditing, setIsEditing] = useState(false); // restrict to override value by props while editing
+  const [currentResponse, setCurrentResponse] = useState({}); // datasource unable to return current value
   const useStyles = getStyles();
   const classes = useStyles();
 
   const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
 
+  const setCurrentValueInterceptor = (value: any) => {
+    setIsEditing(true);
+    setCurrentValue(value);
+  };
+
   useEffect(() => {
     if (writerValue) {
       const { present_value } = writerValue;
       let value = presentValueResolver(panelType, present_value, fieldConfig);
-      setOriginalValue(value);
       setCurrentValue(value);
     }
+  }, []);
+
+  useEffect(() => {
+    if (writerValue) {
+      setCurrentResponse({});
+    }
   }, [writerValue]);
+
+  useEffect(() => {
+    if (writerValue) {
+      let { present_value } = writerValue;
+      if (!_.isEmpty(currentResponse)) {
+        present_value = currentResponse.present_value;
+      }
+      let value = presentValueResolver(panelType, present_value, fieldConfig);
+      setOriginalValue(value);
+      if (!isEditing) {
+        setCurrentValue(value);
+      }
+    }
+  }, [isEditing, currentResponse, writerValue]);
 
   const onSetValue = (value: any) => {
     setOriginalValue(value);
@@ -95,22 +121,27 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       setIsRunning(true);
     } else {
       setIsRunning(false);
+      setIsEditing(false);
     }
     return services?.rfWriterActionService
       ?.createPointPriorityArray(writerUUID, payload)
-      .then(() => {
+      .then(res => {
+        setCurrentResponse(res);
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
+        setCurrentResponse({});
         appEvents.emit(AppEvents.alertError, ['Unsuccessful to set writer value!']);
       })
       .finally(() => {
         setIsRunning(false);
+        setIsEditing(false);
       });
   };
 
   const onResetValue = () => {
     setCurrentValue(originalValue);
+    setIsEditing(false);
   };
 
   return (
@@ -128,7 +159,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
         onResetValue={onResetValue}
         onWriteValue={onWriteValue}
         originalValue={originalValue}
-        setCurrentValue={setCurrentValue}
+        setCurrentValue={setCurrentValueInterceptor}
       />
     </div>
   );

@@ -3,7 +3,6 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Slider } from '@material-ui/core';
-// @ts-ignore
 import { withWriter, WriterHocProps } from '../../hoc/withWriters';
 import { PanelProps } from '../../types/panelProps';
 
@@ -39,7 +38,6 @@ const ThumbComponent = (props: any) => {
 };
 
 function SliderPanel(props: SliderProps) {
-  // const { customStyles, fieldConfig, isRunning, services, data, setIsRunning, options } = props;
   const {
     currentValue,
     originalValue,
