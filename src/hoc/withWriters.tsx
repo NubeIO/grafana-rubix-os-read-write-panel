@@ -117,13 +117,13 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     }
     const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
 
-    if (typeof services?.rfWriterActionService?.createPointPriorityArray === 'function') {
+    if (typeof services?.writerActionService?.createPointPriorityArray === 'function') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
       setIsEditing(false);
     }
-    return services?.rfWriterActionService
+    return services?.writerActionService
       ?.createPointPriorityArray(writerUUID, payload)
       .then(res => {
         setCurrentResponse(res);
