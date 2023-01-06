@@ -17,13 +17,6 @@ import {
   SwitchColorSettings,
 } from './types';
 import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
-import { createGenerateClassName, StylesProvider } from '@material-ui/core/styles';
-
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'rs',
-  disableGlobal: true,
-  seed: 'rs',
-});
 
 interface Props extends PanelProps<PanelOptions> {}
 
@@ -192,89 +185,87 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <StylesProvider generateClassName={generateClassName}>
-      <div className={computedWrapperClassname}>
-        {renderPanelType(PanelType.DISPLAY) && (
-          <WriterDisplayPanel
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            setIsRunning={setIsRunning}
-            fieldConfig={fieldConfig.defaults}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-            services={dataSource.services}
-          />
-        )}
-        {renderPanelType(PanelType.SLIDER) && (
-          <SliderPanel
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {renderPanelType(PanelType.MULTISWITCH) && (
-          <MultiSwitchPanel
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            multiSwitchTab={options.multiSwitchTab}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {renderPanelType(PanelType.SWITCH) && (
-          <Switch
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            switchColorSettings={switchColorSettings}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
-          <NumericFieldWriter
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {backgroundImageURL && (
-          <div
-            style={{
-              position: 'absolute',
-              zIndex: Z_INDEX_BACKGROUND,
-              bottom: `${yPosition}%`,
-              transform: `translateX(-${xPosition}%) translateY(${yPosition}%)`,
-              left: `${xPosition}%`,
-              opacity: opacity / 100,
-              width: `${scale}%`,
-              height: `${scale}%`,
-              backgroundImage: `url(${backgroundImageURL})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: `${xPosition}% ${100 - yPosition}%`,
-            }}
-          />
-        )}
-        {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
-      </div>
-    </StylesProvider>
+    <div className={computedWrapperClassname}>
+      {renderPanelType(PanelType.DISPLAY) && (
+        <WriterDisplayPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          setIsRunning={setIsRunning}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+          services={dataSource.services}
+        />
+      )}
+      {renderPanelType(PanelType.SLIDER) && (
+        <SliderPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.MULTISWITCH) && (
+        <MultiSwitchPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          multiSwitchTab={options.multiSwitchTab}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.SWITCH) && (
+        <Switch
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          switchColorSettings={switchColorSettings}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
+        <NumericFieldWriter
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {backgroundImageURL && (
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: Z_INDEX_BACKGROUND,
+            bottom: `${yPosition}%`,
+            transform: `translateX(-${xPosition}%) translateY(${yPosition}%)`,
+            left: `${xPosition}%`,
+            opacity: opacity / 100,
+            width: `${scale}%`,
+            height: `${scale}%`,
+            backgroundImage: `url(${backgroundImageURL})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: `${xPosition}% ${100 - yPosition}%`,
+          }}
+        />
+      )}
+      {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
+    </div>
   );
 };

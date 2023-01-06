@@ -134,8 +134,11 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
         appEvents.emit(AppEvents.alertError, ['Unsuccessful to set writer value!']);
       })
       .finally(() => {
-        setIsRunning(false);
-        setIsEditing(false);
+        setTimeout(()=> {
+          setIsRunning(false);
+          setIsEditing(false);
+        }, 3000)
+
       });
   };
 
