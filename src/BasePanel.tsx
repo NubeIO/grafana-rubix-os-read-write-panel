@@ -15,8 +15,10 @@ import {
   PanelType,
   SliderColorSettings,
   SwitchColorSettings,
+  TextSettings,
 } from './types';
 import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
+import SingleStatPanel from 'panels/SingleStat';
 
 interface Props extends PanelProps<PanelOptions> {}
 
@@ -68,13 +70,22 @@ const getCustomStyles = ({ options, buttonStyle, sliderColorSettings }: any) => 
 });
 
 const FLOW_FRAMEWORK_DATASOURCE_ID = 'nubeio-flow-framework-data-source';
+
+const defaultTextSettings = {
+  textSize: 40,
+  unitSize: 20,
+  textColor: '#000',
+  unitColor: '#000',
+};
+
 const defaultButtonStyle = {
   activeButtonColor: '#303F9F',
   activeButtonTextColor: '#E0E0E0',
   inactiveButtonColor: '#E0E0E0',
   inactiveButtonTextColor: '#AEAEAE',
 };
-const defaultSliderConfig = {
+
+const defaultSliderColorSettings = {
   sliderColor: '#303F9F',
 };
 
@@ -101,7 +112,8 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   const [currentPanelType, updatePanelType] = useState<string>(panelType);
   const [switchColorSettings, setSwitchColorSettings] = useState<SwitchColorSettings>(defaultSwitchColorSettings);
   const [buttonStyle, setButtonStyle] = useState<ButtonColorSettings>(defaultButtonStyle);
-  const [sliderColorSettings, setSliderColorSettings] = useState<SliderColorSettings>(defaultSliderConfig);
+  const [sliderColorSettings, setSliderColorSettings] = useState<SliderColorSettings>(defaultSliderColorSettings);
+  const [textSettings, setTextSettings] = useState<TextSettings>(defaultTextSettings);
   const [_BISettings, setBISettings] = useState<BISettingsProps>(defaultBiSettings);
   const [opacity, setOpacity] = useState(0);
   const [scale, setScale] = useState(0);
@@ -132,7 +144,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     if (isDatasourceConfigured) {
       return;
     }
-    const datasources = data?.request?.targets.map(x => x.datasource).filter(val => val);
+    const datasources = data?.request?.targets.map(x => x.datasource);
 
     if (Array.isArray(datasources) && datasources.length > 0) {
       datasources.map(datasource => {
@@ -140,7 +152,6 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           .get(datasource)
           .then(res => {
             if (res.meta.id === FLOW_FRAMEWORK_DATASOURCE_ID) {
-              // correctly configured
               setDataSource(res);
               changeIsDatasourceConfigured(true);
               updateUiConfig(res);
@@ -167,10 +178,8 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   };
 
   const updateUiConfig = (res: any = {}) => {
-    const {
-      switchColorSettings, sliderColorSettings, _BISettings, multiSwitchButtonStyle,
-      numericFieldWriterButtonStyle, sliderButtonStyle
-    } = res;
+    const { switchColorSettings, sliderColorSettings, _BISettings, multiSwitchButtonStyle } = res;
+    const { numericFieldWriterButtonStyle, sliderButtonStyle, textSettings } = res;
     setSwitchColorSettings(switchColorSettings);
     const { panelType } = options;
     if (panelType === PanelType.MULTISWITCH) {
@@ -181,6 +190,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
       setButtonStyle(sliderButtonStyle);
     }
     setSliderColorSettings(sliderColorSettings);
+    setTextSettings(textSettings);
     setBISettings(_BISettings);
   };
 
@@ -203,6 +213,18 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           options={options}
           isRunning={isRunning}
           customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.SINGLESTAT) && (
+        <SingleStatPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          textSettings={textSettings}
           setIsRunning={setIsRunning}
           services={dataSource.services}
           fieldConfig={fieldConfig.defaults}

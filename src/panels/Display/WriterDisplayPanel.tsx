@@ -38,7 +38,7 @@ const getStyles = stylesFactory(() => {
   };
 });
 
-export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
+function WriterDisplayPanel(props: PanelProps) {
   const { data, phyWriterMap } = props;
   const styles = getStyles();
   const series = _get(data, 'series', []);
@@ -97,6 +97,6 @@ export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
       </div>
     </div>
   );
-};
+}
 
 export default withWriter(WriterDisplayPanel);
