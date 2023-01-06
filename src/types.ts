@@ -29,7 +29,6 @@ export enum PanelType {
   MULTISWITCH = 'multiSwitch',
   SLIDER = 'slider',
   SWITCH = 'switch',
-  SINGLESTAT = 'singleStat',
   NUMERICFIELDWRITER = 'numericFieldWriter',
 }
 
@@ -90,9 +89,7 @@ export interface DataFieldKeyI {
 }
 
 export enum CategoryType {
-  SingleStat = 'Single Stat',
   Background = 'Background',
-  TextSettings = 'Text Settings',
   NumericSettings = 'Numeric Settings',
   MultiSwitchSettings = 'Multi Switch Settings',
   SwitchColorSettings = 'Switch Color Settings',

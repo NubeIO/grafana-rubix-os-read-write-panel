@@ -167,21 +167,21 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   };
 
   const updateUiConfig = (res: any = {}) => {
-    if (res._BISettings) {
-      setBISettings(res._BISettings);
+    const {
+      switchColorSettings, sliderColorSettings, _BISettings, multiSwitchButtonStyle,
+      numericFieldWriterButtonStyle, sliderButtonStyle
+    } = res;
+    setSwitchColorSettings(switchColorSettings);
+    const { panelType } = options;
+    if (panelType === PanelType.MULTISWITCH) {
+      setButtonStyle(multiSwitchButtonStyle);
+    } else if (panelType === PanelType.NUMERICFIELDWRITER) {
+      setButtonStyle(numericFieldWriterButtonStyle);
+    } else if (panelType === PanelType.SLIDER) {
+      setButtonStyle(sliderButtonStyle);
     }
-    if (res.switchColorSettings) {
-      setSwitchColorSettings(switchColorSettings);
-    }
-
-    if (res.sliderColorSettings) {
-      setSliderColorSettings(res.sliderColorSettings);
-    }
-    switch (currentPanelType) {
-      case PanelType.SLIDER:
-        setButtonStyle(res.sliderButtonStyle);
-        break;
-    }
+    setSliderColorSettings(sliderColorSettings);
+    setBISettings(_BISettings);
   };
 
   return (
