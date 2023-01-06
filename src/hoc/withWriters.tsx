@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AppEvents } from '@grafana/data';
+import { AppEvents, getDisplayProcessor } from '@grafana/data';
 import { Spinner } from '@grafana/ui';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
@@ -61,6 +61,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
+  const [value, setValue] = useState<any>({});
   const [isEditing, setIsEditing] = useState(false); // restrict to override value by props while editing
   const [currentResponse, setCurrentResponse] = useState({}); // datasource unable to return current value
   const useStyles = getStyles();
@@ -73,6 +74,22 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     setIsEditing(true);
     setCurrentValue(value);
   };
+
+  useEffect(() => {
+    const value = props?.data?.series[0]?.fields[1]?.display?.(writerValue?.present_value);
+    // To calculate non-mapped converted standard output (it includes decimal, unit conversion but not mapping)
+    const displayProcessorWithoutMapping = getDisplayProcessor({
+      field: {
+        ...props.data.series[0].fields[1],
+        config: {
+          ...props.data.series[0].fields[1].config,
+          mappings: [],
+        },
+      },
+    });
+    const valueWithoutMapping = displayProcessorWithoutMapping(writerValue?.present_value);
+    setValue({ ...value, suffix: valueWithoutMapping.suffix });
+  }, [data]);
 
   useEffect(() => {
     if (writerValue) {
@@ -159,6 +176,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
         onResetValue={onResetValue}
         onWriteValue={onWriteValue}
         originalValue={originalValue}
+        dataValue={value}
         setCurrentValue={setCurrentValueInterceptor}
       />
     </div>

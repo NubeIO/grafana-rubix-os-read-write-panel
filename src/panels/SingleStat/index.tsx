@@ -11,31 +11,26 @@ interface SingleStatProps extends PanelProps {
 }
 
 function SingleStatPanel(props: SingleStatProps) {
-  const { originalValue, options, textSettings } = props;
-  const { image, showValue, overrideValue, trueValue, falseValue, overrideTextSettings, unit } = options || {};
+  const { options, dataValue, textSettings } = props;
+  const { image, showValue, overrideValue, trueValue, falseValue, overrideTextSettings } = options || {};
 
-  const [_unit, setUnit] = useState('');
   const [textSize, setTextSize] = useState(0);
   const [unitSize, setUnitSize] = useState(0);
-  const [valueColor, setValueColor] = useState('');
-  const [unitColor, setUnitColor] = useState('');
+  const [defaultUnitColor, setDefaultUnitColor] = useState('');
   const [state, setState] = useState(false);
   const [displayText, setDisplayText] = useState('');
 
   useEffect(() => {
     if (overrideTextSettings) {
       setTextSize(options?.textSize || 40);
-      setValueColor(options?.textColor || '#000');
       setUnitSize(options?.unitSize || 20);
-      setUnitColor(options?.unitColor || '#000');
+      setDefaultUnitColor(options?.unitColor || '#000');
     } else {
       setTextSize(textSettings.textSize);
-      setValueColor(textSettings.textColor || '#000');
       setUnitSize(textSettings.unitSize);
-      setUnitColor(textSettings.unitColor);
+      setDefaultUnitColor(textSettings.unitColor);
     }
-    setUnit(options?.unit || '');
-  }, [unit, overrideTextSettings, textSettings, options]);
+  }, [overrideTextSettings, textSettings, options]);
 
   const useStyles = makeStyles(() =>
     createStyles({
@@ -52,17 +47,17 @@ function SingleStatPanel(props: SingleStatProps) {
         justifyContent: 'center',
         alignItems: 'center',
         height: image !== Image.NoImage ? `${textSize}px` : '100%',
+        color: dataValue?.threshold?.color,
       },
       value: {
         fontSize: textSize,
         display: 'inline-block',
         textAlign: 'center',
-        color: valueColor,
       },
       unit: {
         fontSize: `${unitSize}px`,
         marginLeft: '6px',
-        color: unitColor,
+        color: defaultUnitColor,
       },
       imageWrapper: {
         height: showValue ? `calc(100% - ${textSize}px)` : '100%',
@@ -71,16 +66,16 @@ function SingleStatPanel(props: SingleStatProps) {
   );
 
   useEffect(() => {
-    setState(/true$|1/gi.test(originalValue));
-  }, [originalValue]);
+    setState(/true$|1/gi.test(dataValue?.text));
+  }, [dataValue]);
 
   useEffect(() => {
     if (overrideValue) {
       setDisplayText(state ? trueValue || '' : falseValue || '');
     } else {
-      setDisplayText(originalValue);
+      setDisplayText(dataValue?.text);
     }
-  }, [originalValue, state, overrideValue, trueValue, falseValue]);
+  }, [dataValue?.text, state, overrideValue, trueValue, falseValue]);
 
   const classes = useStyles();
 
@@ -90,7 +85,7 @@ function SingleStatPanel(props: SingleStatProps) {
         <div className={classes.textWrapper}>
           <div>
             <span className={classes.value}>{displayText}</span>
-            <span className={classes.unit}>{_unit}</span>
+            {dataValue?.suffix && <span className={classes.unit}>{dataValue?.suffix?.trim()}</span>}
           </div>
         </div>
       )}

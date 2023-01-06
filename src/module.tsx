@@ -112,15 +112,6 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         },
       })
 
-      .addTextInput({
-        path: 'unit',
-        name: 'Unit',
-        defaultValue: '',
-        category: [CategoryType.TextSettings],
-        showIf: (currentConfig: PanelOptions) => {
-          return currentConfig.panelType === PanelType.SINGLESTAT;
-        },
-      })
       .addBooleanSwitch({
         path: 'overrideTextSettings',
         name: 'Override Text Settings',
@@ -144,28 +135,6 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Unit Size',
         defaultValue: 20,
         category: [CategoryType.TextSettings],
-        showIf: (currentConfig: PanelOptions) => {
-          return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.overrideTextSettings;
-        },
-      })
-      .addCustomEditor({
-        id: 'textColor',
-        path: 'textColor',
-        name: 'Text Color',
-        defaultValue: '#000',
-        category: [CategoryType.TextSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
-        },
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.overrideTextSettings;
         },

@@ -74,7 +74,6 @@ const FLOW_FRAMEWORK_DATASOURCE_ID = 'nubeio-flow-framework-data-source';
 const defaultTextSettings = {
   textSize: 40,
   unitSize: 20,
-  textColor: '#000',
   unitColor: '#000',
 };
 

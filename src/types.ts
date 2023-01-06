@@ -24,7 +24,6 @@ export interface SingleStatOptions {
 
   overrideTextSettings?: boolean;
   textSize?: number;
-  textColor?: string;
   unitSize?: number;
   unitColor?: string;
 
@@ -143,7 +142,6 @@ export interface NumericOptions {
 
 export interface TextSettings {
   textSize: number;
-  textColor: string;
   unitSize: number;
   unitColor: string;
 }
