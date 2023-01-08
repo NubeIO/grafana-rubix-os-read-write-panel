@@ -1,5 +1,5 @@
 import React from 'react';
-import { PanelProps } from '../../types/panelProps';
+import { PanelProps } from '../types/panelProps';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
@@ -7,8 +7,8 @@ import { Input } from '@grafana/ui';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import { IconButton } from '@material-ui/core';
-import { MathUtils } from '../../utils/math';
-import { withWriter, WriterHocProps } from '../../hoc/withWriters';
+import { MathUtils } from '../utils/math';
+import { withWriter, WriterHocProps } from '../hoc/withWriters';
 
 interface SliderProps extends WriterHocProps, PanelProps {
   customStyles: any;

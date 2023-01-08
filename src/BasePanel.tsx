@@ -4,10 +4,14 @@ import { PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { stylesFactory } from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
-import WriterDisplayPanel from './panels/Display/WriterDisplayPanel';
-import SliderPanel from './panels/Slider/SliderPanel';
-import MultiSwitchPanel from './panels/MultiSwitch';
-import Switch from './panels/Switch';
+import {
+  MultiSwitchPanel,
+  NumericFieldWriterPanel,
+  SingleStatPanel,
+  SliderPanel,
+  SwitchPanel,
+  WriterDisplayPanel,
+} from './panels';
 import {
   BISettingsProps,
   ButtonColorSettings,
@@ -17,8 +21,6 @@ import {
   SwitchColorSettings,
   TextSettings,
 } from './types';
-import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
-import SingleStatPanel from 'panels/SingleStat';
 
 interface Props extends PanelProps<PanelOptions> {}
 
@@ -244,7 +246,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
         />
       )}
       {renderPanelType(PanelType.SWITCH) && (
-        <Switch
+        <SwitchPanel
           data={data}
           options={options}
           isRunning={isRunning}
@@ -257,7 +259,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
         />
       )}
       {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
-        <NumericFieldWriter
+        <NumericFieldWriterPanel
           data={data}
           options={options}
           isRunning={isRunning}

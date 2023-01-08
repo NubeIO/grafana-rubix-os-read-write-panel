@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import _get from 'lodash.get';
 import { stylesFactory } from '@grafana/ui';
 import { css } from 'emotion';
-import { PanelProps } from '../../types/panelProps';
-import { withWriter } from '../../hoc/withWriters';
+import { PanelProps } from '../types/panelProps';
+import { withWriter } from '../hoc/withWriters';
 
 const getStyles = stylesFactory(() => {
   return {

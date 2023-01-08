@@ -3,8 +3,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Slider } from '@material-ui/core';
-import { withWriter, WriterHocProps } from '../../hoc/withWriters';
-import { PanelProps } from '../../types/panelProps';
+import { withWriter, WriterHocProps } from '../hoc/withWriters';
+import { PanelProps } from '../types/panelProps';
 
 interface SliderProps extends WriterHocProps, PanelProps {
   customStyles: any;
@@ -112,7 +112,7 @@ function SliderPanel(props: SliderProps) {
           value={currentValue}
           valueLabelDisplay="on"
           onChange={(e: any, value: any) => {
-            let val = 0;
+            let val;
             if (typeof value !== 'number') {
               val = value[0];
             } else {

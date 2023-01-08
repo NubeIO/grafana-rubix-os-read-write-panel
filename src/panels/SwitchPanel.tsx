@@ -4,9 +4,9 @@ import { stylesFactory } from '@grafana/ui';
 import { createStyles, Theme, withStyles } from '@material-ui/core';
 import Switch, { SwitchClassKey, SwitchProps } from '@material-ui/core/Switch';
 
-import { SwitchColorSettings } from '../../types';
-import { PanelProps } from '../../types/panelProps';
-import { withWriter, WriterHocProps } from '../../hoc/withWriters';
+import { SwitchColorSettings } from '../types';
+import { PanelProps } from '../types/panelProps';
+import { withWriter, WriterHocProps } from '../hoc/withWriters';
 
 interface SwitchPanelProps extends WriterHocProps, PanelProps {
   switchColorSettings: SwitchColorSettings;
