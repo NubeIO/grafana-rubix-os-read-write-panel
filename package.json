@@ -1,6 +1,6 @@
 {
   "name": "nubeio-grafana-flow-framework-read-write-panel",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "FlowFramework R/W Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
