@@ -18,24 +18,6 @@ export interface WriterHocProps extends PanelProps {
   originalValue: any;
 }
 
-const presentValueResolver = (panelType: string, currentValue: any, fieldConfig: any = {}) => {
-  switch (panelType) {
-    case PanelType.SWITCH:
-      return /true$|1/gi.test(currentValue) ? 1 : 0;
-    case PanelType.NUMERICFIELDWRITER:
-      let currentValue_ = currentValue;
-      if (currentValue > (fieldConfig?.max || 100)) {
-        currentValue_ = fieldConfig?.max || 100;
-      }
-      if (currentValue < (fieldConfig?.min || 0)) {
-        currentValue_ = fieldConfig?.min || 0;
-      }
-      return currentValue_;
-    default:
-      return currentValue;
-  }
-};
-
 function getStyles() {
   return makeStyles(() =>
     createStyles({
@@ -93,9 +75,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
 
   useEffect(() => {
     if (writerValue) {
-      const { present_value } = writerValue;
-      let value = presentValueResolver(panelType, present_value, fieldConfig);
-      setCurrentValue(value);
+      setCurrentValue(writerValue?.present_value);
     }
   }, []);
 
@@ -111,10 +91,9 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       if (!_.isEmpty(currentResponse)) {
         present_value = currentResponse.present_value;
       }
-      let value = presentValueResolver(panelType, present_value, fieldConfig);
-      setOriginalValue(value);
+      setOriginalValue(present_value);
       if (!isEditing) {
-        setCurrentValue(value);
+        setCurrentValue(present_value);
       }
     }
   }, [isEditing, currentResponse, writerValue]);
