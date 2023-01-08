@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { AppEvents } from '@grafana/data';
+import React, { useEffect, useState } from 'react';
+import { AppEvents, getDisplayProcessor } from '@grafana/data';
 import { Spinner } from '@grafana/ui';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
@@ -17,24 +17,6 @@ export interface WriterHocProps extends PanelProps {
   onWriteValue: any;
   originalValue: any;
 }
-
-const presentValueResolver = (panelType: string, currentValue: any, fieldConfig: any = {}) => {
-  switch (panelType) {
-    case PanelType.SWITCH:
-      return /true$|1/gi.test(currentValue) ? 1 : 0;
-    case PanelType.NUMERICFIELDWRITER:
-      let currentValue_ = currentValue;
-      if (currentValue > (fieldConfig?.max || 100)) {
-        currentValue_ = fieldConfig?.max || 100;
-      }
-      if (currentValue < (fieldConfig?.min || 0)) {
-        currentValue_ = fieldConfig?.min || 0;
-      }
-      return currentValue_;
-    default:
-      return currentValue;
-  }
-};
 
 function getStyles() {
   return makeStyles(() =>
@@ -61,20 +43,60 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
+  const [value, setValue] = useState<any>({});
+  const [isEditing, setIsEditing] = useState(false); // restrict to override value by props while editing
+  const [currentResponse, setCurrentResponse] = useState({}); // datasource unable to return current value
   const useStyles = getStyles();
   const classes = useStyles();
 
   const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
 
+  const setCurrentValueInterceptor = (value: any) => {
+    setIsEditing(true);
+    setCurrentValue(value);
+  };
+
+  useEffect(() => {
+    const value = props?.data?.series[0]?.fields[1]?.display?.(writerValue?.present_value);
+    // To calculate non-mapped converted standard output (it includes decimal, unit conversion but not mapping)
+    const displayProcessorWithoutMapping = getDisplayProcessor({
+      field: {
+        ...props.data.series[0].fields[1],
+        config: {
+          ...props.data.series[0].fields[1].config,
+          mappings: [],
+        },
+      },
+    });
+    const valueWithoutMapping = displayProcessorWithoutMapping(writerValue?.present_value);
+    setValue({ ...value, suffix: valueWithoutMapping.suffix });
+  }, [data]);
+
   useEffect(() => {
     if (writerValue) {
-      const { present_value } = writerValue;
-      let value = presentValueResolver(panelType, present_value, fieldConfig);
-      setOriginalValue(value);
-      setCurrentValue(value);
+      setCurrentValue(writerValue?.present_value);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (writerValue) {
+      setCurrentResponse({});
     }
   }, [writerValue]);
+
+  useEffect(() => {
+    if (writerValue) {
+      let { present_value } = writerValue;
+      if (!_.isEmpty(currentResponse)) {
+        present_value = currentResponse.present_value;
+      }
+      setOriginalValue(present_value);
+      if (!isEditing) {
+        setCurrentValue(present_value);
+      }
+    }
+  }, [isEditing, currentResponse, writerValue]);
 
   const onSetValue = (value: any) => {
     setOriginalValue(value);
@@ -86,30 +108,36 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     const writerUUID = writerValue.uuid;
 
     if (!selectedPriorityKey) {
+      appEvents.emit(AppEvents.alertError, ['Current priority not selected!']);
       return Promise.reject('Current priority not selected.');
     }
     const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
 
-    if (typeof services?.rfWriterActionService?.createPointPriorityArray === 'function') {
+    if (typeof services?.writerActionService?.createPointPriorityArray === 'function') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
+      setIsEditing(false);
     }
-    return services?.rfWriterActionService
+    return services?.writerActionService
       ?.createPointPriorityArray(writerUUID, payload)
-      .then(() => {
+      .then(res => {
+        setCurrentResponse(res);
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
-        appEvents.emit(AppEvents.alertError, ['Unsucessful to set writer value.']);
+        setCurrentResponse({});
+        appEvents.emit(AppEvents.alertError, ['Unsuccessful to set writer value!']);
       })
       .finally(() => {
         setIsRunning(false);
+        setIsEditing(false);
       });
   };
 
   const onResetValue = () => {
     setCurrentValue(originalValue);
+    setIsEditing(false);
   };
 
   return (
@@ -127,7 +155,8 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
         onResetValue={onResetValue}
         onWriteValue={onWriteValue}
         originalValue={originalValue}
-        setCurrentValue={setCurrentValue}
+        dataValue={value}
+        setCurrentValue={setCurrentValueInterceptor}
       />
     </div>
   );

@@ -1,9 +1,9 @@
-import { PanelProps } from '../../types/panelProps';
-import { MultiSwitchType, MultiSwitchTabType } from '../../types';
+import { PanelProps } from '../types/panelProps';
+import { MultiSwitchTabType, MultiSwitchType } from '../types';
 import React, { useEffect, useRef, useState } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grid from '@material-ui/core/Grid';
@@ -13,7 +13,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
-import { withWriter, WriterHocProps } from '../../hoc/withWriters';
+import { withWriter, WriterHocProps } from '../hoc/withWriters';
 
 interface MultiSwitchProps extends WriterHocProps, PanelProps {
   customStyles: any;
@@ -51,7 +51,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
   const [originalName, setOriginalName] = useState('');
   const [dropdownOptions, setDropdownOptions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
-  const anchorRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(1);
 
   useEffect(() => {
@@ -104,7 +104,10 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
     }
   };
 
-  const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
+  const handleMenuItemClick = (
+    event: React.MouseEvent<HTMLLIElement> | React.MouseEvent<HTMLAnchorElement>,
+    index: number
+  ) => {
     if (multiSwitchTab && multiSwitchTab.data) {
       setSelectedIndex(index);
       handleClick(multiSwitchTab.data[index].value);

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import _get from 'lodash.get';
 import { stylesFactory } from '@grafana/ui';
 import { css } from 'emotion';
-import { PanelProps } from '../../types/panelProps';
-import { withWriter } from '../../hoc/withWriters';
+import { PanelProps } from '../types/panelProps';
+import { withWriter } from '../hoc/withWriters';
 
 const getStyles = stylesFactory(() => {
   return {
@@ -27,6 +27,7 @@ const getStyles = stylesFactory(() => {
       color: #999;
       text-transform: uppercase;
       text-align: center;
+      width: 100%;
     `,
     textCenter: css`
       text-align: center;
@@ -37,7 +38,7 @@ const getStyles = stylesFactory(() => {
   };
 });
 
-export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
+function WriterDisplayPanel(props: PanelProps) {
   const { data, phyWriterMap } = props;
   const styles = getStyles();
   const series = _get(data, 'series', []);
@@ -75,7 +76,7 @@ export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
   if (!writer) {
     return (
       <div className={styles.container}>
-        <p className={styles.warningText}>Please! selected a writer from appropriate data source.</p>
+        <p className={styles.warningText}>Please select a writer from appropriate data source!</p>
       </div>
     );
   }
@@ -96,6 +97,6 @@ export const WriterDisplayPanel: React.FC<PanelProps> = (props: PanelProps) => {
       </div>
     </div>
   );
-};
+}
 
 export default withWriter(WriterDisplayPanel);

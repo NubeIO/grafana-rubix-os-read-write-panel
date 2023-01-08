@@ -1,15 +1,17 @@
 import * as React from 'react';
-import { PanelOptions, PanelType, PanelTypeLabel, CategoryType } from './types';
+import { CategoryType, Image, PanelOptions, PanelType, PanelTypeLabel } from './types';
 import { SliderEditor } from './components/SliderEditor';
 import { PanelPlugin } from '@grafana/data';
 import { BasePanel } from './BasePanel';
 import { ColorPicker } from '@grafana/ui';
 import { MultiSwitchTab } from './components/MultiSwitchTab';
 
-const datePickerStyle = { display: 'flex', alignItems: 'center', height: '32px' };
+const customButtonSupportablePanelType = [PanelType.SLIDER, PanelType.MULTISWITCH, PanelType.NUMERICFIELDWRITER];
 
 export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
   .setPanelOptions(builder => {
+    const datePickerStyle = { display: 'flex', alignItems: 'center', height: '32px' };
+
     return builder
       .addSelect({
         path: 'panelType',
@@ -17,6 +19,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         settings: {
           options: [
             { value: PanelType.SLIDER, label: PanelTypeLabel[PanelType.SLIDER] },
+            { value: PanelType.SINGLESTAT, label: PanelTypeLabel[PanelType.SINGLESTAT] },
             { value: PanelType.DISPLAY, label: PanelTypeLabel[PanelType.DISPLAY] },
             { value: PanelType.MULTISWITCH, label: PanelTypeLabel[PanelType.MULTISWITCH] },
             { value: PanelType.SWITCH, label: PanelTypeLabel[PanelType.SWITCH] },
@@ -38,6 +41,137 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           return currentConfig.panelType === PanelType.MULTISWITCH;
         },
       })
+
+      .addSelect({
+        path: 'image',
+        name: 'Image',
+        settings: {
+          options: [
+            { value: Image.NoImage, label: Image.NoImage },
+            { value: Image.Light, label: Image.Light },
+            { value: Image.Fan, label: Image.Fan },
+            { value: Image.Cooling, label: Image.Cooling },
+            { value: Image.Heating, label: Image.Heating },
+            { value: Image.Alert, label: Image.Alert },
+          ],
+        },
+        defaultValue: Image.NoImage,
+        category: [CategoryType.SingleStat],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SINGLESTAT;
+        },
+      })
+      .addBooleanSwitch({
+        path: 'showValue',
+        name: 'Show Value (on Top)',
+        defaultValue: true,
+        category: [CategoryType.SingleStat],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.image !== Image.NoImage;
+        },
+      })
+      .addBooleanSwitch({
+        path: 'overrideValue',
+        name: 'Override Value',
+        defaultValue: false,
+        category: [CategoryType.SingleStat],
+        showIf: (currentConfig: PanelOptions) => {
+          return (
+            currentConfig.panelType === PanelType.SINGLESTAT &&
+            currentConfig.image !== Image.NoImage &&
+            currentConfig.showValue
+          );
+        },
+      })
+      .addTextInput({
+        path: 'trueValue',
+        name: 'True Value',
+        defaultValue: '',
+        category: [CategoryType.SingleStat],
+        showIf: (currentConfig: PanelOptions) => {
+          return (
+            currentConfig.panelType === PanelType.SINGLESTAT &&
+            currentConfig.image !== Image.NoImage &&
+            currentConfig.showValue &&
+            currentConfig.overrideValue
+          );
+        },
+      })
+      .addTextInput({
+        path: 'falseValue',
+        name: 'False Value',
+        defaultValue: '',
+        category: [CategoryType.SingleStat],
+        showIf: (currentConfig: PanelOptions) => {
+          return (
+            currentConfig.panelType === PanelType.SINGLESTAT &&
+            currentConfig.image !== Image.NoImage &&
+            currentConfig.showValue &&
+            currentConfig.overrideValue
+          );
+        },
+      })
+
+      .addBooleanSwitch({
+        path: 'overrideTextSettings',
+        name: 'Override Text Settings',
+        defaultValue: false,
+        category: [CategoryType.TextSettings],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SINGLESTAT;
+        },
+      })
+      .addNumberInput({
+        path: 'textSize',
+        name: 'Text Size',
+        defaultValue: 40,
+        category: [CategoryType.TextSettings],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.overrideTextSettings;
+        },
+      })
+      .addNumberInput({
+        path: 'unitSize',
+        name: 'Unit Size',
+        defaultValue: 20,
+        category: [CategoryType.TextSettings],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.overrideTextSettings;
+        },
+      })
+      .addCustomEditor({
+        id: 'unitColor',
+        path: 'unitColor',
+        name: 'Unit Color',
+        defaultValue: '#000',
+        category: [CategoryType.TextSettings],
+        editor: props => {
+          return (
+            <div style={datePickerStyle}>
+              <ColorPicker
+                color={props.value}
+                onChange={color => {
+                  props.onChange(color);
+                }}
+              />
+            </div>
+          );
+        },
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.overrideTextSettings;
+        },
+      })
+
+      .addNumberInput({
+        path: 'step',
+        name: 'Step',
+        defaultValue: 1,
+        category: [CategoryType.NumericSettings],
+        showIf: (currentConfig: PanelOptions) => {
+          return currentConfig.panelType === PanelType.NUMERICFIELDWRITER;
+        },
+      })
+
       .addBooleanSwitch({
         path: 'overrideSwitchColorSettings',
         name: 'Override Switch Color Settings',
@@ -91,13 +225,14 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           return currentConfig.panelType === PanelType.SWITCH && currentConfig.overrideSwitchColorSettings;
         },
       })
+
       .addBooleanSwitch({
         path: 'overrideButtonColorSettings',
         name: 'Override Button Color Settings',
         defaultValue: false,
         category: [CategoryType.ButtonColorSettings],
         showIf: (currentConfig: PanelOptions) => {
-          return [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType);
+          return customButtonSupportablePanelType.includes(currentConfig.panelType);
         },
       })
       .addCustomEditor({
@@ -120,7 +255,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
-            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            customButtonSupportablePanelType.includes(currentConfig.panelType) &&
             currentConfig.overrideButtonColorSettings
           );
         },
@@ -145,7 +280,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
-            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            customButtonSupportablePanelType.includes(currentConfig.panelType) &&
             currentConfig.overrideButtonColorSettings
           );
         },
@@ -170,7 +305,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
-            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            customButtonSupportablePanelType.includes(currentConfig.panelType) &&
             currentConfig.overrideButtonColorSettings
           );
         },
@@ -195,11 +330,12 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
-            [PanelType.SLIDER, PanelType.MULTISWITCH].includes(currentConfig.panelType) &&
+            customButtonSupportablePanelType.includes(currentConfig.panelType) &&
             currentConfig.overrideButtonColorSettings
           );
         },
       })
+
       .addBooleanSwitch({
         path: 'overrideSliderSettings',
         name: 'Override Slider Settings',
@@ -231,6 +367,7 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
           return currentConfig.panelType === PanelType.SLIDER && currentConfig.overrideSliderSettings;
         },
       })
+
       .addTextInput({
         path: 'backgroundImageURL',
         name: 'Background Image URL',

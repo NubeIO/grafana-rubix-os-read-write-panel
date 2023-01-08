@@ -1,30 +1,26 @@
-import _get from 'lodash.get';
 import React, { useEffect, useState } from 'react';
 import { css, cx } from 'emotion';
 import { PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { stylesFactory } from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
-import WriterDisplayPanel from './panels/Display/WriterDisplayPanel';
-import SliderPanel from './panels/Slider/SliderPanel';
-import MultiSwitchPanel from './panels/MultiSwitch';
-import Switch from './panels/Switch';
 import {
+  MultiSwitchPanel,
+  NumericFieldWriterPanel,
+  SingleStatPanel,
+  SliderPanel,
+  SwitchPanel,
+  WriterDisplayPanel,
+} from './panels';
+import {
+  BISettingsProps,
+  ButtonColorSettings,
   PanelOptions,
   PanelType,
-  ButtonColorSettings,
   SliderColorSettings,
-  BISettingsProps,
   SwitchColorSettings,
+  TextSettings,
 } from './types';
-import NumericFieldWriter from 'panels/NumericFieldWriter/NumericFieldWriter';
-import { StylesProvider, createGenerateClassName } from '@material-ui/core/styles';
-
-const generateClassName = createGenerateClassName({
-  productionPrefix: 'rs',
-  disableGlobal: true,
-  seed: 'rs',
-});
 
 interface Props extends PanelProps<PanelOptions> {}
 
@@ -75,14 +71,22 @@ const getCustomStyles = ({ options, buttonStyle, sliderColorSettings }: any) => 
   },
 });
 
-const RUBIX_SERVICE_DATASOURCE_ID = 'nubeio-rubix-service-data-source';
+const FLOW_FRAMEWORK_DATASOURCE_ID = 'nubeio-flow-framework-data-source';
+
+const defaultTextSettings = {
+  textSize: 40,
+  unitSize: 20,
+  unitColor: '#000',
+};
+
 const defaultButtonStyle = {
   activeButtonColor: '#303F9F',
   activeButtonTextColor: '#E0E0E0',
   inactiveButtonColor: '#E0E0E0',
   inactiveButtonTextColor: '#AEAEAE',
 };
-const defaultSliderConfig = {
+
+const defaultSliderColorSettings = {
   sliderColor: '#303F9F',
 };
 
@@ -109,7 +113,8 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   const [currentPanelType, updatePanelType] = useState<string>(panelType);
   const [switchColorSettings, setSwitchColorSettings] = useState<SwitchColorSettings>(defaultSwitchColorSettings);
   const [buttonStyle, setButtonStyle] = useState<ButtonColorSettings>(defaultButtonStyle);
-  const [sliderColorSettings, setSliderColorSettings] = useState<SliderColorSettings>(defaultSliderConfig);
+  const [sliderColorSettings, setSliderColorSettings] = useState<SliderColorSettings>(defaultSliderColorSettings);
+  const [textSettings, setTextSettings] = useState<TextSettings>(defaultTextSettings);
   const [_BISettings, setBISettings] = useState<BISettingsProps>(defaultBiSettings);
   const [opacity, setOpacity] = useState(0);
   const [scale, setScale] = useState(0);
@@ -140,15 +145,14 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     if (isDatasourceConfigured) {
       return;
     }
-    const datasources = data?.request?.targets.map(x => x.datasource).filter(val => val);
+    const datasources = data?.request?.targets.map(x => x.datasource);
 
     if (Array.isArray(datasources) && datasources.length > 0) {
       datasources.map(datasource => {
         return getDataSourceSrv()
           .get(datasource)
           .then(res => {
-            if (res.meta.id === RUBIX_SERVICE_DATASOURCE_ID) {
-              // correctly configured
+            if (res.meta.id === FLOW_FRAMEWORK_DATASOURCE_ID) {
               setDataSource(res);
               changeIsDatasourceConfigured(true);
               updateUiConfig(res);
@@ -175,107 +179,116 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   };
 
   const updateUiConfig = (res: any = {}) => {
-    if (res._BISettings) {
-      setBISettings(res._BISettings);
+    const { switchColorSettings, sliderColorSettings, _BISettings, multiSwitchButtonStyle } = res;
+    const { numericFieldWriterButtonStyle, sliderButtonStyle, textSettings } = res;
+    setSwitchColorSettings(switchColorSettings);
+    const { panelType } = options;
+    if (panelType === PanelType.MULTISWITCH) {
+      setButtonStyle(multiSwitchButtonStyle);
+    } else if (panelType === PanelType.NUMERICFIELDWRITER) {
+      setButtonStyle(numericFieldWriterButtonStyle);
+    } else if (panelType === PanelType.SLIDER) {
+      setButtonStyle(sliderButtonStyle);
     }
-    if (res.switchColorSettings) {
-      setSwitchColorSettings(switchColorSettings);
-    }
-
-    if (res.sliderColorSettings) {
-      setSliderColorSettings(res.sliderColorSettings);
-    }
-    switch (currentPanelType) {
-      case PanelType.SLIDER:
-        setButtonStyle(res.sliderButtonStyle);
-        break;
-    }
+    setSliderColorSettings(sliderColorSettings);
+    setTextSettings(textSettings);
+    setBISettings(_BISettings);
   };
 
   return (
-    <StylesProvider generateClassName={generateClassName}>
-      <div className={computedWrapperClassname}>
-        {renderPanelType(PanelType.DISPLAY) && (
-          <WriterDisplayPanel
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            setIsRunning={setIsRunning}
-            fieldConfig={fieldConfig.defaults}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-            services={dataSource.services}
-          />
-        )}
-        {renderPanelType(PanelType.SLIDER) && (
-          <SliderPanel
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {renderPanelType(PanelType.MULTISWITCH) && (
-          <MultiSwitchPanel
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            multiSwitchTab={options.multiSwitchTab}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {renderPanelType(PanelType.SWITCH) && (
-          <Switch
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            switchColorSettings={switchColorSettings}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
-          <NumericFieldWriter
-            data={data}
-            options={options}
-            isRunning={isRunning}
-            customStyles={customStyles}
-            setIsRunning={setIsRunning}
-            services={dataSource.services}
-            fieldConfig={fieldConfig.defaults}
-            phyWriterMap={dataSource.flowNetworksPhyDevices}
-          />
-        )}
-        {backgroundImageURL && (
-          <div
-            style={{
-              position: 'absolute',
-              zIndex: Z_INDEX_BACKGROUND,
-              bottom: `${yPosition}%`,
-              transform: `translateX(-${xPosition}%) translateY(${yPosition}%)`,
-              left: `${xPosition}%`,
-              opacity: opacity / 100,
-              width: `${scale}%`,
-              height: `${scale}%`,
-              backgroundImage: `url(${backgroundImageURL})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: `${xPosition}% ${100 - yPosition}%`,
-            }}
-          />
-        )}
-        {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
-      </div>
-    </StylesProvider>
+    <div className={computedWrapperClassname}>
+      {renderPanelType(PanelType.DISPLAY) && (
+        <WriterDisplayPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          setIsRunning={setIsRunning}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+          services={dataSource.services}
+        />
+      )}
+      {renderPanelType(PanelType.SLIDER) && (
+        <SliderPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.SINGLESTAT) && (
+        <SingleStatPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          textSettings={textSettings}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.MULTISWITCH) && (
+        <MultiSwitchPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          multiSwitchTab={options.multiSwitchTab}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.SWITCH) && (
+        <SwitchPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          switchColorSettings={switchColorSettings}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
+        <NumericFieldWriterPanel
+          data={data}
+          options={options}
+          isRunning={isRunning}
+          customStyles={customStyles}
+          setIsRunning={setIsRunning}
+          services={dataSource.services}
+          fieldConfig={fieldConfig.defaults}
+          phyWriterMap={dataSource.flowNetworksPhyDevices}
+        />
+      )}
+      {backgroundImageURL && (
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: Z_INDEX_BACKGROUND,
+            bottom: `${yPosition}%`,
+            transform: `translateX(-${xPosition}%) translateY(${yPosition}%)`,
+            left: `${xPosition}%`,
+            opacity: opacity / 100,
+            width: `${scale}%`,
+            height: `${scale}%`,
+            backgroundImage: `url(${backgroundImageURL})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: `${xPosition}% ${100 - yPosition}%`,
+          }}
+        />
+      )}
+      {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
+    </div>
   );
 };

@@ -1,6 +1,6 @@
 # Introduction
 
-`Grafana Rubix Service R/W Panel` for showing value on slider/switch and also writing value of:
+`Grafana FlowFramework R/W Panel` for showing value on slider/switch and writing value of:
 
 - SingleStat (for just read)
 - Slider
@@ -9,7 +9,7 @@
 
 ## Constraint:
 
-- It needs `Rubix Service datasource`
+- It needs `FlowFramework DataSource`
 
 ## Getting started
 

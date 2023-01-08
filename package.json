@@ -1,18 +1,18 @@
 {
-  "name": "nubeio-grafana-rubix-service-read-write-panel",
-  "version": "1.0.1",
-  "description": "Rubix Service R/W Panel",
+  "name": "nubeio-grafana-flow-framework-read-write-panel",
+  "version": "0.0.0",
+  "description": "FlowFramework R/W Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "repository": "git@github.com:NubeIO/grafana-rubix-service-read-write-panel.git",
+  "repository": "git@github.com:NubeIO/grafana-flow-framework-read-write-panel.git",
   "author": "Nube iO",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/NubeIO/grafana-rubix-service-read-write-panel/issues",
+    "url": "https://github.com/NubeIO/grafana-flow-framework-read-write-panel/issues",
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
@@ -30,7 +30,6 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "lodash.get": "^4.4.2",
-    "mqtt": "^4.1.0",
     "react-color": "^2.18.1"
   }
 }
