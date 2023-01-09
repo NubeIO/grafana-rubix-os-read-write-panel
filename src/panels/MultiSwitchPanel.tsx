@@ -40,6 +40,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
           ...customStyles.button['&:disabled'],
           fontSize: multiSwitchTab?.type === MultiSwitchType.BUTTON ? '12px' : '16px',
         },
+        textTransform: 'inherit',
       },
       popper: {
         zIndex: 10,
