@@ -145,13 +145,13 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     if (isDatasourceConfigured) {
       return;
     }
-    const datasources = data?.request?.targets.map(x => x.datasource);
+    const datasources = data?.request?.targets.map((x) => x.datasource);
 
     if (Array.isArray(datasources) && datasources.length > 0) {
-      datasources.map(datasource => {
+      datasources.map((datasource) => {
         return getDataSourceSrv()
           .get(datasource)
-          .then(res => {
+          .then((res) => {
             if (res.meta.id === FLOW_FRAMEWORK_DATASOURCE_ID) {
               setDataSource(res);
               changeIsDatasourceConfigured(true);
@@ -160,7 +160,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
               changeIsDatasourceConfigured(false);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
           });
       });

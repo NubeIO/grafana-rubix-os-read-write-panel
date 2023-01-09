@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { CategoryType, Image, PanelOptions, PanelType, PanelTypeLabel } from './types';
 import { SliderEditor } from './components/SliderEditor';
 import { PanelPlugin } from '@grafana/data';
@@ -7,11 +7,23 @@ import { ColorPicker } from '@grafana/ui';
 import { MultiSwitchTab } from './components/MultiSwitchTab';
 
 const customButtonSupportablePanelType = [PanelType.SLIDER, PanelType.MULTISWITCH, PanelType.NUMERICFIELDWRITER];
+const datePickerStyle = { display: 'flex', alignItems: 'center', height: '32px' };
+
+const DateTimePicker = (props: any) => {
+  return (
+    <div style={datePickerStyle}>
+      <ColorPicker
+        color={props.value}
+        onChange={(color) => {
+          props.onChange(color);
+        }}
+      />
+    </div>
+  );
+};
 
 export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
-  .setPanelOptions(builder => {
-    const datePickerStyle = { display: 'flex', alignItems: 'center', height: '32px' };
-
+  .setPanelOptions((builder) => {
     return builder
       .addSelect({
         path: 'panelType',
@@ -33,7 +45,8 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         path: 'multiSwitchTab',
         name: 'Number of Count',
         category: [CategoryType.MultiSwitchSettings],
-        editor: props => {
+        // eslint-disable-next-line react/display-name
+        editor: (props: any) => {
           return <MultiSwitchTab {...props} />;
         },
 
@@ -145,17 +158,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Unit Color',
         defaultValue: '#000',
         category: [CategoryType.TextSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.panelType === PanelType.SINGLESTAT && currentConfig.overrideTextSettings;
@@ -187,17 +192,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'True Color',
         defaultValue: '#52D869',
         category: [CategoryType.SwitchColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.panelType === PanelType.SWITCH && currentConfig.overrideSwitchColorSettings;
@@ -209,17 +206,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'False Color',
         defaultValue: '#7E7E7E',
         category: [CategoryType.SwitchColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.panelType === PanelType.SWITCH && currentConfig.overrideSwitchColorSettings;
@@ -241,17 +230,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Active Button Color',
         defaultValue: '#303F9F',
         category: [CategoryType.ButtonColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
@@ -266,17 +247,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Active Button Text Color',
         defaultValue: '#E0E0E0',
         category: [CategoryType.ButtonColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
@@ -291,17 +264,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Inactive Button Color',
         defaultValue: '#E0E0E0',
         category: [CategoryType.ButtonColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
@@ -316,17 +281,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Inactive Button Text Color',
         defaultValue: '#AEAEAE',
         category: [CategoryType.ButtonColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return (
@@ -351,17 +308,9 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Color',
         defaultValue: '#303F9F',
         category: [CategoryType.SliderColorSettings],
-        editor: props => {
-          return (
-            <div style={datePickerStyle}>
-              <ColorPicker
-                color={props.value}
-                onChange={color => {
-                  props.onChange(color);
-                }}
-              />
-            </div>
-          );
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
+          return <DateTimePicker {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.panelType === PanelType.SLIDER && currentConfig.overrideSliderSettings;
@@ -386,7 +335,8 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Opacity',
         category: [CategoryType.Background],
         defaultValue: 30,
-        editor: props => {
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
           return <SliderEditor {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
@@ -399,7 +349,8 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Scale',
         category: [CategoryType.Background],
         defaultValue: 30,
-        editor: props => {
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
           return <SliderEditor {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
@@ -412,7 +363,8 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'X-Position',
         category: [CategoryType.Background],
         defaultValue: 100,
-        editor: props => {
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
           return <SliderEditor {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {
@@ -425,7 +377,8 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         name: 'Y-Position',
         category: [CategoryType.Background],
         defaultValue: 0,
-        editor: props => {
+        // eslint-disable-next-line react/display-name
+        editor: (props) => {
           return <SliderEditor {...props} />;
         },
         showIf: (currentConfig: PanelOptions) => {

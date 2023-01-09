@@ -1,6 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { PanelProps } from '../types/panelProps';
 import { MultiSwitchTabType, MultiSwitchType } from '../types';
-import React, { useEffect, useRef, useState } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -57,7 +57,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
 
   useEffect(() => {
     if (multiSwitchTab && multiSwitchTab.data) {
-      Object.keys(multiSwitchTab.data).forEach(key => {
+      Object.keys(multiSwitchTab.data).forEach((key) => {
         if (+multiSwitchTab.data[+key].value === currentValue) {
           setOriginalName(currentValue);
           setSelectedIndex(+key);
@@ -68,7 +68,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
 
   useEffect(() => {
     if (multiSwitchTab && multiSwitchTab.data) {
-      setDropdownOptions(Object.keys(multiSwitchTab.data).map(key => multiSwitchTab.data[+key].name));
+      setDropdownOptions(Object.keys(multiSwitchTab.data).map((key) => multiSwitchTab.data[+key].name));
     }
   }, [multiSwitchTab]);
 
@@ -79,10 +79,11 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
   const displayMultiSwitch = () => {
     return (
       multiSwitchTab &&
-      Object.keys(multiSwitchTab.data).map(key => {
+      Object.keys(multiSwitchTab.data).map((key) => {
         const sw = multiSwitchTab.data[+key];
         return (
           <Button
+            key={key}
             className={classes.button}
             onClick={() => {
               if (isRunning) {
@@ -117,7 +118,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
   };
 
   const handleToggle = () => {
-    setOpen(prevOpen => !prevOpen);
+    setOpen((prevOpen) => !prevOpen);
   };
 
   const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
@@ -162,7 +163,7 @@ function MultiSwitchPanel(props: MultiSwitchProps) {
                           <MenuItem
                             key={option}
                             selected={option === originalName}
-                            onClick={event => handleMenuItemClick(event, i)}
+                            onClick={(event) => handleMenuItemClick(event, i)}
                           >
                             {option}
                           </MenuItem>

@@ -41,16 +41,20 @@ const getStyles = stylesFactory(() => {
 function WriterDisplayPanel(props: PanelProps) {
   const { data, phyWriterMap } = props;
   const styles = getStyles();
-  const series = _get(data, 'series', []);
-  if (!series.length) {
-    return null;
-  }
-  const currentIdx = series.length - 1;
-  const timeFieldValue = _get(series, `${currentIdx}.fields[0].values.buffer[0]`, null);
-  const fieldValue = _get(series, `${currentIdx}.fields[1].values.buffer[0]`, null);
-  // const timeField = (Array.isArray(payload) && payload.length > 0 && payload[0]) || null;
-  const [time, updatedTime] = useState(new Date(timeFieldValue));
-  const [writer, updateWriter] = useState(fieldValue);
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
+  const [writer, setWriter] = useState({} as any);
+
+  useEffect(() => {
+    const series = _get(data, 'series', []);
+    if (series.length) {
+      const currentIdx = series.length - 1;
+      const timeFieldValue = _get(series, `${currentIdx}.fields[0].values.buffer[0]`, null);
+      const fieldValue = _get(series, `${currentIdx}.fields[1].values.buffer[0]`, null);
+      const _time = new Date(timeFieldValue).toLocaleTimeString();
+      setTime(_time);
+      setWriter(fieldValue);
+    }
+  }, [data]);
 
   const getNetworkName = (writerThingUUID: string) => {
     const phyWriterObj = phyWriterMap[writerThingUUID];
@@ -65,13 +69,8 @@ function WriterDisplayPanel(props: PanelProps) {
     if (!writer) {
       return '';
     }
-    return `${writer.writer_thing_name} - ${writer.writer_thing_class}`;
+    return `${writer?.writer_thing_name} - ${writer?.writer_thing_class}`;
   };
-
-  useEffect(() => {
-    updatedTime(new Date(timeFieldValue));
-    updateWriter(fieldValue);
-  }, [fieldValue, timeFieldValue]);
 
   if (!writer) {
     return (
@@ -87,13 +86,13 @@ function WriterDisplayPanel(props: PanelProps) {
         <p className={styles.title}>Writer</p>
         <h3>{getWriterName()}</h3>
         <p className={styles.title}>Network Details</p>
-        <p>{getNetworkName(writer.writer_thing_uuid)}</p>
+        <p>{getNetworkName(writer?.writer_thing_uuid)}</p>
         <p className={styles.title}>Updated At</p>
-        <p>{time.toLocaleTimeString()}</p>
+        <p>{time}</p>
       </div>
       <div className="right-container">
         <p className={styles.title}>Present Value</p>
-        <span className={styles.value}>{writer.present_value}</span>
+        <span className={styles.value}>{writer?.present_value}</span>
       </div>
     </div>
   );

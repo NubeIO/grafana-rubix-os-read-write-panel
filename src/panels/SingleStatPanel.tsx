@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, TextSettings } from 'types';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { PanelProps } from 'types/panelProps';
