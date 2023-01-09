@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { AppEvents, getDisplayProcessor } from '@grafana/data';
 import { Spinner } from '@grafana/ui';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+import * as _ from 'lodash';
 
-import { PanelType } from '../types';
 import { PanelProps } from '../types/panelProps';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
@@ -40,17 +40,17 @@ function getStyles() {
 }
 
 export const withWriter = (ComposedComponent: any) => (props: any) => {
-  const { setIsRunning, services, data, panelType, fieldConfig, isRunning } = props;
+  const { setIsRunning, services, data, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
   const [value, setValue] = useState<any>({});
   const [isEditing, setIsEditing] = useState(false); // restrict to override value by props while editing
-  const [currentResponse, setCurrentResponse] = useState({}); // datasource unable to return current value
+  const [currentResponse, setCurrentResponse] = useState({} as any); // datasource unable to return current value
   const useStyles = getStyles();
   const classes = useStyles();
 
-  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
-  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data);
+  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data) as any;
+  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data) as any;
 
   const setCurrentValueInterceptor = (value: any) => {
     setIsEditing(true);
@@ -121,7 +121,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     }
     return services?.writerActionService
       ?.createPointPriorityArray(writerUUID, payload)
-      .then(res => {
+      .then((res: any) => {
         setCurrentResponse(res);
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })

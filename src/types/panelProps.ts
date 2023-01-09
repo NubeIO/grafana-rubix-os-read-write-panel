@@ -21,12 +21,9 @@ export interface BaseService {
   delete: Promise<any>;
 }
 
-export interface ServicesI {
-  [serviceName: string]: Function;
-}
-
 export interface PanelProps {
   data: PanelData;
+  dataValue: any;
   isRunning: boolean;
   options?: PanelOptions;
   services: any;

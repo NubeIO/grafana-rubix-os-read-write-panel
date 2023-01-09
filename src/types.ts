@@ -64,15 +64,6 @@ export interface ButtonColorSettings {
   inactiveButtonTextColor: string;
 }
 
-export interface BackgroundOptions {
-  backgroundImageURL: string;
-  overrideBISettings: boolean;
-  opacity?: number;
-  scale?: number;
-  xPosition?: number;
-  yPosition?: number;
-}
-
 export interface ButtonOptions {
   overrideButtonColorSettings?: boolean;
   activeButtonColor?: string;
@@ -151,7 +142,6 @@ export interface PanelOptions
     SingleStatOptions,
     ButtonOptions,
     SliderOptions,
-    BackgroundOptions,
     BackgroundOptions,
     NumericOptions,
     SwitchOptions {

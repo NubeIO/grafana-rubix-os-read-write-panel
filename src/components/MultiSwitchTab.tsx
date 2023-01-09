@@ -3,14 +3,14 @@ import { StandardEditorProps } from '@grafana/data';
 import { HorizontalGroup, Input, Select } from '@grafana/ui';
 import { MultiSwitchTabDataType, MultiSwitchTabType, MultiSwitchType } from '../types';
 
-export const MultiSwitchTab: React.FC<StandardEditorProps<any, any>> = props => {
+export const MultiSwitchTab: React.FC<StandardEditorProps> = (props) => {
   const [count, setCount] = useState(Object.keys(props?.value?.data || {}).length || 1);
   const [type, setType] = useState<MultiSwitchType>(props?.value?.type || MultiSwitchType.BUTTON);
   const [keyValues, setKeyValues] = useState<MultiSwitchTabDataType>(props?.value?.data || {});
 
   useEffect(() => {
     const transformedVal: MultiSwitchTabType = { type: type, data: {} };
-    [...Array(count).keys()].forEach(i => {
+    [...Array(count).keys()].forEach((i) => {
       transformedVal.data[i] = { name: '', value: -1 };
       transformedVal.data[i].name = (keyValues[i] && keyValues[i].name) || '';
       transformedVal.data[i].value = (keyValues[i] && keyValues[i].value) || -1;
@@ -22,7 +22,7 @@ export const MultiSwitchTab: React.FC<StandardEditorProps<any, any>> = props => 
     <>
       <Input
         type="number"
-        onChange={e => {
+        onChange={(e) => {
           setCount(parseInt((e.target as HTMLTextAreaElement).value, 10));
         }}
         value={count}
@@ -31,7 +31,7 @@ export const MultiSwitchTab: React.FC<StandardEditorProps<any, any>> = props => 
       />
       <br />
       <Select
-        onChange={e => {
+        onChange={(e) => {
           if (e.value === MultiSwitchType.BUTTON) {
             setType(MultiSwitchType.BUTTON);
           } else {
@@ -47,10 +47,10 @@ export const MultiSwitchTab: React.FC<StandardEditorProps<any, any>> = props => 
       />
       {[...Array(count).keys()].map((keyVal, i) => {
         return (
-          <div style={{ margin: '8px 0 0 8px' }}>
+          <div key={keyVal} style={{ margin: '8px 0 0 8px' }}>
             <HorizontalGroup>
               <Input
-                onChange={e => {
+                onChange={(e) => {
                   if (!keyValues[i]) {
                     keyValues[i] = { name: '', value: '' };
                   }
@@ -61,7 +61,7 @@ export const MultiSwitchTab: React.FC<StandardEditorProps<any, any>> = props => 
                 placeholder="name"
               />
               <Input
-                onChange={e => {
+                onChange={(e) => {
                   if (!keyValues[i]) {
                     keyValues[i] = { name: '', value: '' };
                   }
