@@ -62,9 +62,9 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     // To calculate non-mapped converted standard output (it includes decimal, unit conversion but not mapping)
     const displayProcessorWithoutMapping = getDisplayProcessor({
       field: {
-        ...props.data.series[0].fields[1],
+        ...props?.data?.series[0]?.fields[1],
         config: {
-          ...props.data.series[0].fields[1].config,
+          ...props?.data?.series[0]?.fields[1]?.config,
           mappings: [],
         },
       },
