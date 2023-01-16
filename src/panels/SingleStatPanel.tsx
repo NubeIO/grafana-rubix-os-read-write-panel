@@ -78,7 +78,7 @@ function SingleStatPanel(props: SingleStatProps) {
   );
 
   useEffect(() => {
-    setState(!/^(false|0)$/gi.test(dataValue?.text));
+    setState(!/^(false|0|)$/gi.test(dataValue?.text)); // false, 0, ''
   }, [dataValue]);
 
   useEffect(() => {
