@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [v1.1.2](https://github.com/NubeIO/grafana-flow-framework-read-write-panel/tree/v1.1.2) (2022-01-16)
+
+- Cannot read properties of undefined (reading 'fields')
+- Fix: set undefined value as false
+
 ## [v1.0.1](https://github.com/NubeIO/grafana-flow-framework-read-write-panel/tree/v1.0.1) (2022-01-09)
 
 - Make multi-switch text style as user expects
