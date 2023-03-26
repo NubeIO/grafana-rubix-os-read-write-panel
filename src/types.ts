@@ -142,12 +142,12 @@ export interface TextSettings {
 
 export interface PanelOptions
   extends MultiSwitchOptions,
-  SingleStatOptions,
-  ButtonOptions,
-  SliderOptions,
-  BackgroundOptions,
-  NumericOptions,
-  SwitchOptions {
+    SingleStatOptions,
+    ButtonOptions,
+    SliderOptions,
+    BackgroundOptions,
+    NumericOptions,
+    SwitchOptions {
   panelType: PanelType;
 }
 

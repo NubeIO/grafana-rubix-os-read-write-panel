@@ -26,13 +26,12 @@ import withGenericDialog from 'components/dialog/withGenericDialog';
 import { WritePointValueModal } from 'components/write-point-value';
 import { DIALOG_NAMES } from 'constants/dialogNames';
 import * as writerUiService from './services/writerUiService';
-import _ from "lodash";
+import _ from 'lodash';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
 
-
 interface Props extends PanelProps<PanelOptions> {
-  openGenericDialog: Function
+  openGenericDialog: Function;
 }
 
 const getStyles = stylesFactory(() => {
@@ -65,8 +64,8 @@ const getStyles = stylesFactory(() => {
       background: rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
-      justify-content: center;    
-      `
+      justify-content: center;
+    `,
   };
 });
 
@@ -124,7 +123,6 @@ const defaultBiSettings = {
   xPosition: 0,
   yPosition: 0,
 };
-
 
 const _BasePanel: React.FC<Props> = (props: Props) => {
   const styles = getStyles();
@@ -231,16 +229,16 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
     openGenericDialog(DIALOG_NAMES.writePointDialog, {
       title: 'Write Priority Array',
-      icon: "cloud-upload",
+      icon: 'cloud-upload',
       panelType: currentPanelType,
       priority: priority,
       options: options,
       customStyles: customStyles,
       fieldConfig: fieldConfig.defaults,
       dialogBody: WritePointValueModal,
-      setPriority: onSetPriority
-    })
-  }
+      setPriority: onSetPriority,
+    });
+  };
 
   const onSetPriority = async (value: Priority) => {
     const payload = writerUiService.constructWriterPayload(value);
@@ -264,29 +262,31 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       .finally(() => {
         setIsRunning(false);
       });
-  }
+  };
 
   const onGetValue = async () => {
     const series = _.get(data, 'series', []);
-    if (!series.length) return
-    const writerValue = await writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data) as any;
+    if (!series.length) {
+      return;
+    }
+    const writerValue = await writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
     const writerUUID = writerValue.uuid;
 
     if (typeof dataSource.services?.pointsService?.fetchByPointUUID === 'function') {
-      setIsRunning(true)
+      setIsRunning(true);
       return dataSource.services?.pointsService
         ?.fetchByPointUUID(writerUUID, true)
         .then((res: any) => {
-          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', res)
-          setData(result)
-          setPriority(res.priority)
+          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', res);
+          setData(result);
+          setPriority(res.priority);
         })
         .catch(() => {})
         .finally(() => {
-          setIsRunning(false)
+          setIsRunning(false);
         });
-    };
-  }
+    }
+  };
 
   return (
     <div className={computedWrapperClassname}>
@@ -396,10 +396,13 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
         />
       )}
       {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
-      {isRunning && <div className={styles.overlayRunning} > <LoadingPlaceholder /></div>}
-    </div >
+      {isRunning && (
+        <div className={styles.overlayRunning}>
+          <LoadingPlaceholder />
+        </div>
+      )}
+    </div>
   );
 };
 
-export const BasePanel = withGenericDialog(_BasePanel)
-
+export const BasePanel = withGenericDialog(_BasePanel);

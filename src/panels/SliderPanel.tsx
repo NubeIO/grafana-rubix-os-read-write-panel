@@ -102,40 +102,48 @@ export function SliderPanelComponent(props: SliderProps) {
   const onResetValue = () => {
     _onResetValue();
     setInternalVal(originalValue);
-  }
+  };
 
-  return <div className={classes.slider}>
-    {(onSetValue || onResetValue) && <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-      {onSetValue && <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
-        Set
-      </Button>}
-      {onResetValue && <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
-        Reset
-      </Button>}
-    </ButtonGroup>}
-    {_CustomSlider && (
-      <_CustomSlider
-        ThumbComponent={(props: any) => <ThumbComponent {...props} currentValue={currentValue} />}
-        min={fieldConfig?.min || 0}
-        max={fieldConfig?.max || 100}
-        defaultValue={originalValue}
-        size={size}
-        value={currentValue}
-        valueLabelDisplay="on"
-        onChange={(e: any, value: any) => {
-          let val;
-          if (typeof value !== 'number') {
-            val = value[0];
-          } else {
-            val = value;
-          }
-          setInternalVal(val);
-          setCurrentValue(val);
-        }}
-        disabled={isRunning}
-      />
-    )}
-  </div>
+  return (
+    <div className={classes.slider}>
+      {(onSetValue || onResetValue) && (
+        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+          {onSetValue && (
+            <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
+              Set
+            </Button>
+          )}
+          {onResetValue && (
+            <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
+              Reset
+            </Button>
+          )}
+        </ButtonGroup>
+      )}
+      {_CustomSlider && (
+        <_CustomSlider
+          ThumbComponent={(props: any) => <ThumbComponent {...props} currentValue={currentValue} />}
+          min={fieldConfig?.min || 0}
+          max={fieldConfig?.max || 100}
+          defaultValue={originalValue}
+          size={size}
+          value={currentValue}
+          valueLabelDisplay="on"
+          onChange={(e: any, value: any) => {
+            let val;
+            if (typeof value !== 'number') {
+              val = value[0];
+            } else {
+              val = value;
+            }
+            setInternalVal(val);
+            setCurrentValue(val);
+          }}
+          disabled={isRunning}
+        />
+      )}
+    </div>
+  );
 }
 
 export default withWriter(SliderPanelComponent);

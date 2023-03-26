@@ -24,8 +24,8 @@ export function SwitchPanelComponent(props: SwitchPanelProps) {
 
   const styles = getStyles();
 
-  const width = options?.width ?? 100
-  const height = options?.height ?? 52
+  const width = options?.width ?? 100;
+  const height = options?.height ?? 52;
 
   const IOSSwitch = withStyles((theme: Theme) =>
     createStyles({

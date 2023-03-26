@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GenericDialog from './genericDialog';
 
-
 function withGenericDialog(ComposedComponent: any) {
   return function (props: any) {
     const [dialogId, updateDialogId] = useState('');
