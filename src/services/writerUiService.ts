@@ -1,6 +1,6 @@
 import { PanelData } from '@grafana/data';
 import _get from 'lodash.get';
-import { DataFieldKeyI } from '../types';
+import { DataFieldKeyI, Priority } from '../types';
 
 const transformToNumericValue = (value: any): number | string => {
   let val = +value;
@@ -12,13 +12,21 @@ const transformToNumericValue = (value: any): number | string => {
   return val;
 };
 
-export const constructWriterPayload = (key: string, value: string) => {
+export const constructWriterPayloadValue = (key: string, value: string) => {
   return {
     action: 'write',
     ask_refresh: true,
     priority: {
       [key]: transformToNumericValue(value),
     },
+  };
+};
+
+export const constructWriterPayload = (priority: Priority) => {
+  return {
+    action: 'write',
+    ask_refresh: true,
+    priority: priority,
   };
 };
 

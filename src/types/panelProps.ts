@@ -25,6 +25,7 @@ export interface PanelProps {
   data: PanelData;
   dataValue: any;
   isRunning: boolean;
+  isEditPanel: boolean;
   options?: PanelOptions;
   services: any;
   fieldConfig?: FieldConfig;

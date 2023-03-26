@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from 'emotion';
 import { stylesFactory } from '@grafana/ui';
 import { createStyles, Theme, withStyles } from '@material-ui/core';
@@ -12,21 +12,26 @@ interface SwitchPanelProps extends WriterHocProps, PanelProps {
   switchColorSettings: SwitchColorSettings;
 }
 
-function SwitchPanel(props: SwitchPanelProps) {
-  const { originalValue, onSetValue, options, isRunning, switchColorSettings } = props;
+export function SwitchPanelComponent(props: SwitchPanelProps) {
+  const { isEditPanel, originalValue: _originalValue, onSetValue, options, isRunning, switchColorSettings } = props;
+  let [internalVal, setInternalVal] = useState(_originalValue);
 
   const handleClick = () => {
-    const value = !originalValue ? 1 : 0;
+    const value = !(isEditPanel ? internalVal : _originalValue) ? 1 : 0;
     onSetValue(value);
+    setInternalVal(value);
   };
 
   const styles = getStyles();
 
+  const width = options?.width ?? 100
+  const height = options?.height ?? 52
+
   const IOSSwitch = withStyles((theme: Theme) =>
     createStyles({
       root: {
-        width: 100,
-        height: 52,
+        width: width,
+        height: height,
         padding: 0,
         margin: theme.spacing(1),
       },
@@ -36,7 +41,7 @@ function SwitchPanel(props: SwitchPanelProps) {
         },
         padding: 2,
         '&$checked': {
-          transform: 'translateX(48px)',
+          transform: `translateX(${width - height}px)`,
           color: theme.palette.common.white,
           '& + $track': {
             backgroundColor: options?.overrideSwitchColorSettings
@@ -52,11 +57,11 @@ function SwitchPanel(props: SwitchPanelProps) {
         },
       },
       thumb: {
-        width: 48,
-        height: 48,
+        width: height - 4,
+        height: height - 4,
       },
       track: {
-        borderRadius: 50 / 2,
+        borderRadius: height / 2,
         border: `1px solid ${theme.palette.grey[400]}`,
         backgroundColor: options?.overrideSwitchColorSettings
           ? options?.switchFalseColor
@@ -91,10 +96,10 @@ function SwitchPanel(props: SwitchPanelProps) {
     }
     return value !== 0;
   };
-
+  const originalValue = isEditPanel ? internalVal : _originalValue;
   return (
-    <div className={styles.switchWrapper}>
-      <IOSSwitch checked={isTruthyVal(originalValue)} disabled={isRunning} onClick={handleClick} />
+    <div className={styles.switchWrapper} onClick={handleClick}>
+      <IOSSwitch checked={isTruthyVal(originalValue)} disabled={isRunning} />
     </div>
   );
 }
@@ -105,6 +110,7 @@ const getStyles = stylesFactory(() => {
       display: flex;
       height: 100%;
       align-items: center;
+      cursor: pointer;
       justify-content: center;
     `,
   };
@@ -118,4 +124,4 @@ interface Props extends SwitchProps {
   classes: Styles;
 }
 
-export default withWriter(SwitchPanel);
+export default withWriter(SwitchPanelComponent);

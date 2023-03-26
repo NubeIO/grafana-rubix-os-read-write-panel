@@ -37,6 +37,7 @@ export interface SingleStatOptions {
 export interface SliderOptions {
   overrideSliderSettings?: boolean;
   sliderColor?: string;
+  sliderWidth?: string;
 }
 
 export enum PanelType {
@@ -119,6 +120,8 @@ export enum CategoryType {
 export interface SwitchOptions {
   overrideSwitchColorSettings?: boolean;
   switchTrueColor?: string;
+  height?: number;
+  width?: number;
   switchFalseColor?: string;
 }
 
@@ -139,11 +142,31 @@ export interface TextSettings {
 
 export interface PanelOptions
   extends MultiSwitchOptions,
-    SingleStatOptions,
-    ButtonOptions,
-    SliderOptions,
-    BackgroundOptions,
-    NumericOptions,
-    SwitchOptions {
+  SingleStatOptions,
+  ButtonOptions,
+  SliderOptions,
+  BackgroundOptions,
+  NumericOptions,
+  SwitchOptions {
   panelType: PanelType;
+}
+
+export interface Priority {
+  point_uuid?: string;
+  _1?: number;
+  _2?: number;
+  _3?: number;
+  _4?: number;
+  _5?: number;
+  _6?: number;
+  _7?: number;
+  _8?: number;
+  _9?: number;
+  _10?: number;
+  _11?: number;
+  _12?: number;
+  _13?: number;
+  _14?: number;
+  _15?: number;
+  _16?: number;
 }

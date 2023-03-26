@@ -24,6 +24,7 @@ interface SingleStatProps extends PanelProps {
 
 function SingleStatPanel(props: SingleStatProps) {
   const { options, dataValue, textSettings } = props;
+  console.log(dataValue)
   const { image, showValue, overrideValue, trueValue, falseValue, overrideTextSettings } = options || {};
 
   const [textSize, setTextSize] = useState(0);
@@ -96,7 +97,7 @@ function SingleStatPanel(props: SingleStatProps) {
       {(showValue || image === Image.NoImage) && (
         <div className={classes.textWrapper}>
           <div>
-            <span className={classes.value}>{displayText}</span>
+            <span className={classes.value} key={displayText}>{displayText}</span>
             {dataValue?.suffix && <span className={classes.unit}>{dataValue?.suffix?.trim()}</span>}
           </div>
         </div>
