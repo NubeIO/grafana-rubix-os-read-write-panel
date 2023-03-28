@@ -126,7 +126,7 @@ const defaultBiSettings = {
 
 function fetchPriority(value: PanelData): Priority {
   // @ts-ignore
-  return value.series[0].fields[1].values.buffer[0].priority;
+  return value.series[0]?.fields[1].values.buffer[0].priority;
 }
 
 const _BasePanel: React.FC<Props> = (props: Props) => {
