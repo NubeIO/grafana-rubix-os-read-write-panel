@@ -169,7 +169,6 @@ export const WritePointValueModal = (props: any) => {
                   options={{
                     ...options,
                     sliderWidth: '95%',
-                    overrideSliderSettings: true,
                   }}
                 />
               </Card>
@@ -243,15 +242,10 @@ export const WritePointValueModal = (props: any) => {
                   size="small"
                   isEditPanel
                   multiSwitchTab={options.multiSwitchTab}
-                  onSetValue={(value: any) => onChange(value, priorityKey)}
+                  onSetValue={(value: any) => onChange(parseInt(value, 10), priorityKey)}
                   onResetValue={() => onreset(priorityKey)}
                   originalValue={getNum(priority[priorityKey])}
                   {...props}
-                  options={{
-                    ...options,
-                    sliderWidth: '95%',
-                    overrideSliderSettings: true,
-                  }}
                 />
               </Card>
             </Grid>

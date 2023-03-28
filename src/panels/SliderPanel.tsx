@@ -64,7 +64,7 @@ export function SliderPanelComponent(props: SliderProps) {
         root: {
           height: 6,
           color: options?.overrideSliderSettings ? options?.sliderColor : customStyles?.slider?.color,
-          width: options?.overrideSliderSettings ? options?.sliderWidth : '',
+          width: options?.sliderWidth ? options?.sliderWidth : '',
         },
         thumb: {
           marginTop: -8,

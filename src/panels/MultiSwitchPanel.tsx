@@ -57,6 +57,10 @@ export function MultiSwitchPanelComponent(props: MultiSwitchProps) {
   const [originalValue, setOriginalValue] = useState(_originalValue);
 
   useEffect(() => {
+    setOriginalValue(_originalValue);
+  }, [_originalValue]);
+
+  useEffect(() => {
     if (multiSwitchTab && multiSwitchTab.data) {
       Object.keys(multiSwitchTab.data).forEach((key) => {
         if (+multiSwitchTab.data[+key].value === currentValue) {

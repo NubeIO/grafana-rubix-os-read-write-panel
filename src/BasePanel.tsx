@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { css, cx } from 'emotion';
-import { AppEvents, PanelProps } from '@grafana/data';
+import { AppEvents, PanelData, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { IconButton, LoadingPlaceholder, stylesFactory } from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
@@ -124,6 +124,11 @@ const defaultBiSettings = {
   yPosition: 0,
 };
 
+function fetchPriority(value: PanelData): Priority {
+  // @ts-ignore
+  return value.series[0].fields[1].values.buffer[0].priority;
+}
+
 const _BasePanel: React.FC<Props> = (props: Props) => {
   const styles = getStyles();
 
@@ -143,7 +148,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   const [xPosition, setXPosition] = useState(0);
   const [yPosition, setYPosition] = useState(0);
   const [data, setData] = useState(value);
-  const [priority, setPriority] = useState();
+  const [priority, setPriority] = useState(fetchPriority(value));
   const customStyles = getCustomStyles({ options, buttonStyle, sliderColorSettings });
 
   useEffect(() => {
@@ -166,6 +171,8 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (isDatasourceConfigured) {
+      setData(value);
+      setPriority(fetchPriority(value));
       return;
     }
     const datasources = data?.request?.targets.map((x) => x.datasource);
@@ -189,10 +196,6 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       });
     }
   }, [value]);
-
-  useEffect(() => {
-    onGetValue();
-  }, [dataSource]);
 
   const computedWrapperClassname = cx(
     styles.wrapper,
@@ -235,6 +238,8 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       options: options,
       customStyles: customStyles,
       fieldConfig: fieldConfig.defaults,
+      switchColorSettings: switchColorSettings,
+      multiSwitchTab: options.multiSwitchTab,
       dialogBody: WritePointValueModal,
       setPriority: onSetPriority,
     });
