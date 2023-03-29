@@ -56,7 +56,7 @@ export function SliderPanelComponent(props: SliderProps) {
   const useStyles = getStyles(customStyles);
   const classes = useStyles();
   let [_CustomSlider, setCustomSlider] = useState<any>(null);
-  let [internalVal, setInternalVal] = useState(originalValue);
+  let [internalVal, setInternalVal] = useState(_currentValue);
 
   useEffect(() => {
     setCustomSlider(

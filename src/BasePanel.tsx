@@ -29,6 +29,7 @@ import * as writerUiService from './services/writerUiService';
 import _ from 'lodash';
 // @ts-ignore
 import appEvents from 'grafana/app/core/app_events';
+import { generateUUID } from 'utils/uuid';
 
 interface Props extends PanelProps<PanelOptions> {
   openGenericDialog: Function;
@@ -149,6 +150,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   const [yPosition, setYPosition] = useState(0);
   const [data, setData] = useState(value);
   const [priority, setPriority] = useState(fetchPriority(value));
+  const [key, setKey] = useState(generateUUID());
   const customStyles = getCustomStyles({ options, buttonStyle, sliderColorSettings });
 
   useEffect(() => {
@@ -259,6 +261,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       ?.createPointPriorityArray(writerUUID, payload)
       .then(async (res: any) => {
         await onGetValue();
+        setKey(generateUUID());
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {
@@ -300,7 +303,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       </div>
       {renderPanelType(PanelType.DISPLAY) && (
         <DisplayPanel
-          key={JSON.stringify(data)}
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -313,7 +316,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       )}
       {renderPanelType(PanelType.SLIDER) && (
         <SliderPanel
-          key={JSON.stringify(data)}
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -327,7 +330,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       )}
       {renderPanelType(PanelType.SINGLESTAT) && (
         <SingleStatPanel
-          key={JSON.stringify(data)}
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -341,7 +344,6 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       )}
       {renderPanelType(PanelType.MULTISWITCH) && (
         <MultiSwitchPanel
-          key={JSON.stringify(data)}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -356,6 +358,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       )}
       {renderPanelType(PanelType.SWITCH) && (
         <SwitchPanel
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -370,7 +373,6 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       )}
       {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
         <NumericFieldWriterPanel
-          key={JSON.stringify(data)}
           data={data}
           options={options}
           isRunning={isRunning}

@@ -98,13 +98,18 @@ export const WritePointValueModal = (props: any) => {
 
   const onChange = (value: number | null, priorityKey: string, reset = false) => {
     formData[priorityKey] = value;
+    console.log(formData);
 
-    setFormData(formData);
     if (reset) {
+      setFormData({
+        ...formData,
+      });
       setKeys({
         ...keys,
         [priorityKey]: generateUUID(),
       });
+    } else {
+      setFormData(formData);
     }
   };
 
@@ -162,6 +167,7 @@ export const WritePointValueModal = (props: any) => {
                   key={keys[priorityKey]}
                   size="small"
                   isEditPanel
+                  currentValue={getNum(formData[priorityKey])}
                   setCurrentValue={(value: any) => onChange(value, priorityKey)}
                   onResetValue={() => onreset(priorityKey)}
                   originalValue={getNum(priority[priorityKey])}
@@ -212,7 +218,7 @@ export const WritePointValueModal = (props: any) => {
                   key={keys[priorityKey]}
                   isEditPanel
                   onSetValue={(value: any) => onChange(value, priorityKey)}
-                  originalValue={getNum(priority[priorityKey])}
+                  originalValue={getNum(formData[priorityKey])}
                   {...props}
                   options={{
                     ...options,
@@ -242,9 +248,10 @@ export const WritePointValueModal = (props: any) => {
                   size="small"
                   isEditPanel
                   multiSwitchTab={options.multiSwitchTab}
+                  currentValue={getNum(formData[priorityKey])}
                   onSetValue={(value: any) => onChange(parseInt(value, 10), priorityKey)}
                   onResetValue={() => onreset(priorityKey)}
-                  originalValue={getNum(priority[priorityKey])}
+                  originalValue={getNum(formData[priorityKey])}
                   {...props}
                 />
               </Card>

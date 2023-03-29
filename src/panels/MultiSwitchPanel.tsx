@@ -21,7 +21,7 @@ interface MultiSwitchProps extends WriterHocProps, PanelProps {
 }
 
 export function MultiSwitchPanelComponent(props: MultiSwitchProps) {
-  const { originalValue: _originalValue, isRunning, currentValue, onSetValue, customStyles, multiSwitchTab } = props;
+  const { isRunning, currentValue, onSetValue, customStyles, multiSwitchTab } = props;
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       root: {
@@ -54,11 +54,11 @@ export function MultiSwitchPanelComponent(props: MultiSwitchProps) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(1);
-  const [originalValue, setOriginalValue] = useState(_originalValue);
+  const [originalValue, setOriginalValue] = useState(currentValue);
 
   useEffect(() => {
-    setOriginalValue(_originalValue);
-  }, [_originalValue]);
+    setOriginalValue(currentValue);
+  }, [currentValue]);
 
   useEffect(() => {
     if (multiSwitchTab && multiSwitchTab.data) {
