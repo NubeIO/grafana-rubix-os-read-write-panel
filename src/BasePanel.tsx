@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { css, cx } from 'emotion';
 import { AppEvents, PanelData, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { HorizontalGroup, IconButton, LoadingPlaceholder, stylesFactory, Tag } from '@grafana/ui';
+import {
+  HorizontalGroup,
+  Icon,
+  IconButton,
+  LoadingPlaceholder,
+  stylesFactory,
+  Tag,
+  Tooltip,
+  VerticalGroup,
+} from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
 import {
   MultiSwitchPanel,
@@ -309,7 +318,9 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   return (
     <div className={computedWrapperClassname}>
       <div style={{ float: 'right', transform: 'translate(-12px, -32px)' }}>
-        <IconButton name="cloud-upload" size="lg" key="cloud-upload" onClick={openPriorityWriter} />
+        <HorizontalGroup>
+          <IconButton name="cloud-upload" size="lg" key="cloud-upload" onClick={openPriorityWriter} />
+        </HorizontalGroup>
       </div>
       {renderPanelType(PanelType.DISPLAY) && (
         <DisplayPanel
@@ -412,19 +423,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
           }}
         />
       )}
-
-      <div
-        style={{
-          position: 'absolute',
-          right: 0,
-          bottom: 0,
-        }}
-      >
-        <HorizontalGroup>
-          <Tag name={writerPriority} colorIndex={5} />
-          {writerPriority !== currentPriority && <Tag name={currentPriority} colorIndex={7} />}
-        </HorizontalGroup>
-      </div>
+      <InfoHeader currentPriority={currentPriority} writerPriority={writerPriority} />
       {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
       {isRunning && (
         <div className={styles.overlayRunning}>
@@ -434,5 +433,43 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
     </div>
   );
 };
+
+interface InfoHeaderProps {
+  writerPriority: string;
+  currentPriority: string;
+}
+
+function InfoHeader(props: InfoHeaderProps) {
+  const { writerPriority, currentPriority } = props;
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        transform: 'translate(0, -30px)',
+      }}
+    >
+      <Tooltip
+        content={
+          <VerticalGroup>
+            <HorizontalGroup>
+              {writerPriority !== currentPriority ? 'Read Priority:' : 'Read/Write Priority:'}
+              <Tag name={writerPriority} colorIndex={5} />
+            </HorizontalGroup>
+            {writerPriority !== currentPriority && (
+              <HorizontalGroup>
+                Write Priority:
+                <Tag name={currentPriority} colorIndex={7} />
+              </HorizontalGroup>
+            )}
+          </VerticalGroup>
+        }
+      >
+        <Icon name="info-circle" style={{ color: writerPriority !== currentPriority ? 'orange' : 'currentColor' }} />
+      </Tooltip>
+    </div>
+  );
+}
 
 export const BasePanel = withGenericDialog(_BasePanel);
