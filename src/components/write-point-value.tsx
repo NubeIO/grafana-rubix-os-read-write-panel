@@ -53,7 +53,19 @@ const getKeyLabel = (key: string) => {
 };
 
 export const WritePointValueModal = (props: any) => {
-  const { open, closeGenericDialog, panelType, options, priority, setPriority } = props;
+  const {
+    open,
+    closeGenericDialog,
+    panelType,
+    options,
+    priority,
+    setPriority,
+    display = (value: number) => {
+      return {
+        numeric: value,
+      };
+    },
+  } = props;
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [formData, setFormData] = useState({} as any);
   const [keys, setKeys] = useState(generateKeys(16));
@@ -218,7 +230,7 @@ export const WritePointValueModal = (props: any) => {
                   key={keys[priorityKey]}
                   isEditPanel
                   onSetValue={(value: any) => onChange(value, priorityKey)}
-                  originalValue={getNum(formData[priorityKey])}
+                  originalValue={display(getNum(formData[priorityKey])).numeric}
                   {...props}
                   options={{
                     ...options,
@@ -248,10 +260,10 @@ export const WritePointValueModal = (props: any) => {
                   size="small"
                   isEditPanel
                   multiSwitchTab={options.multiSwitchTab}
-                  currentValue={getNum(formData[priorityKey])}
+                  currentValue={display(getNum(formData[priorityKey])).numeric}
                   onSetValue={(value: any) => onChange(parseInt(value, 10), priorityKey)}
                   onResetValue={() => onreset(priorityKey)}
-                  originalValue={getNum(formData[priorityKey])}
+                  originalValue={display(getNum(formData[priorityKey])).numeric}
                   {...props}
                 />
               </Card>

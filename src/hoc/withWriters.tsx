@@ -71,7 +71,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     });
     const valueWithoutMapping = displayProcessorWithoutMapping(writerValue?.present_value);
     setValue({ ...value, suffix: valueWithoutMapping.suffix });
-  }, [data]);
+  }, [data, currentResponse]);
 
   useEffect(() => {
     if (writerValue) {

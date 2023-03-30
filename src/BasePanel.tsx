@@ -229,8 +229,9 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   };
 
   const openPriorityWriter = () => {
+    const fields = props?.data?.series[0]?.fields[1];
     //@ts-ignore
-    const value = props?.data?.series[0]?.fields[1]?.values?.buffer[0];
+    const value = fields?.values?.buffer[0];
 
     openGenericDialog(DIALOG_NAMES.writePointDialog, {
       title: 'Write Priority Array',
@@ -244,6 +245,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
       multiSwitchTab: options.multiSwitchTab,
       dialogBody: WritePointValueModal,
       setPriority: onSetPriority,
+      display: fields?.display,
     });
   };
 

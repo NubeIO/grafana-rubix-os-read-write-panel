@@ -13,11 +13,21 @@ interface SwitchPanelProps extends WriterHocProps, PanelProps {
 }
 
 export function SwitchPanelComponent(props: SwitchPanelProps) {
-  const { isEditPanel, originalValue: _originalValue, onSetValue, options, isRunning, switchColorSettings } = props;
+  const {
+    isEditPanel,
+    dataValue,
+    originalValue: _originalValue,
+    onSetValue,
+    options,
+    isRunning,
+    switchColorSettings,
+  } = props;
   let [internalVal, setInternalVal] = useState(_originalValue);
 
+  const externalValue = dataValue ? dataValue.numeric : _originalValue;
+
   const handleClick = () => {
-    const value = !(isEditPanel ? internalVal : _originalValue) ? 1 : 0;
+    const value = !(isEditPanel ? internalVal : externalValue) ? 1 : 0;
     onSetValue(value);
     setInternalVal(value);
   };
@@ -96,7 +106,7 @@ export function SwitchPanelComponent(props: SwitchPanelProps) {
     }
     return value !== 0;
   };
-  const originalValue = isEditPanel ? internalVal : _originalValue;
+  const originalValue = isEditPanel ? internalVal : externalValue;
   return (
     <div className={styles.switchWrapper} onClick={handleClick}>
       <IOSSwitch checked={isTruthyVal(originalValue)} disabled={isRunning} />

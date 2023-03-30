@@ -21,7 +21,10 @@ interface MultiSwitchProps extends WriterHocProps, PanelProps {
 }
 
 export function MultiSwitchPanelComponent(props: MultiSwitchProps) {
-  const { isRunning, currentValue, onSetValue, customStyles, multiSwitchTab } = props;
+  const { isRunning, dataValue, currentValue: _currentValue, onSetValue, customStyles, multiSwitchTab } = props;
+
+  const currentValue = dataValue ? dataValue.numeric : _currentValue;
+
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       root: {
