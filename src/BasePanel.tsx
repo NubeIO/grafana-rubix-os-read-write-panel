@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { css, cx } from 'emotion';
 import { AppEvents, PanelData, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { IconButton, LoadingPlaceholder, stylesFactory } from '@grafana/ui';
+import { HorizontalGroup, IconButton, LoadingPlaceholder, stylesFactory, Tag } from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
 import {
   MultiSwitchPanel,
@@ -128,6 +128,11 @@ const defaultBiSettings = {
 function fetchPriority(value: PanelData): Priority {
   // @ts-ignore
   return value.series[0]?.fields[1].values.buffer[0].priority;
+}
+
+function fetchWriterPriority(value: PanelData): string {
+  // @ts-ignore
+  return value.series[0]?.fields[1].values.buffer[0].current_priority?.toString();
 }
 
 const _BasePanel: React.FC<Props> = (props: Props) => {
@@ -298,6 +303,9 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data).displayName;
+  const writerPriority = fetchWriterPriority(data) ?? currentPriority;
+
   return (
     <div className={computedWrapperClassname}>
       <div style={{ float: 'right', transform: 'translate(-12px, -32px)' }}>
@@ -404,6 +412,19 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
           }}
         />
       )}
+
+      <div
+        style={{
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+        }}
+      >
+        <HorizontalGroup>
+          <Tag name={writerPriority} colorIndex={5} />
+          {writerPriority !== currentPriority && <Tag name={currentPriority} colorIndex={7} />}
+        </HorizontalGroup>
+      </div>
       {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
       {isRunning && (
         <div className={styles.overlayRunning}>

@@ -110,7 +110,6 @@ export const WritePointValueModal = (props: any) => {
 
   const onChange = (value: number | null, priorityKey: string, reset = false) => {
     formData[priorityKey] = value;
-    console.log(formData);
 
     if (reset) {
       setFormData({
@@ -171,7 +170,11 @@ export const WritePointValueModal = (props: any) => {
               <Card variant="outlined">
                 <InlineLabel>
                   {getKeyLabel(priorityKey)}
-                  <TextButton variant="text" onClick={() => onChange(null, priorityKey, true)}>
+                  <TextButton
+                    variant="text"
+                    onClick={() => onChange(null, priorityKey, true)}
+                    disabled={!formData[priorityKey]}
+                  >
                     Clear
                   </TextButton>
                 </InlineLabel>
@@ -200,7 +203,7 @@ export const WritePointValueModal = (props: any) => {
             <Grid item xs={6} sm={3} key={priorityKey}>
               <InlineField labelWidth={6} label={getKeyLabel(priorityKey)}>
                 <Input
-                  placeholder={priorityKey}
+                  placeholder={'Value'}
                   key={keys[priorityKey]}
                   type="number"
                   defaultValue={formData[priorityKey]}
@@ -213,7 +216,13 @@ export const WritePointValueModal = (props: any) => {
                       event.preventDefault();
                     }
                   }}
-                  suffix={<IconButton name="trash-alt" onClick={() => onChange(null, priorityKey, true)} />}
+                  suffix={
+                    <IconButton
+                      name="trash-alt"
+                      onClick={() => onChange(null, priorityKey, true)}
+                      disabled={!formData[priorityKey]}
+                    />
+                  }
                 />
               </InlineField>
             </Grid>
@@ -225,7 +234,7 @@ export const WritePointValueModal = (props: any) => {
           {Object.keys(formData).map((priorityKey: string) => (
             <Grid item xs={6} sm={3} key={getKeyLabel(priorityKey)}>
               <HorizontalGroup wrap={false}>
-                <InlineLabel width={6}>{priorityKey}</InlineLabel>
+                <InlineLabel width={6}>{getKeyLabel(priorityKey)}</InlineLabel>
                 <SwitchPanelComponent
                   key={keys[priorityKey]}
                   isEditPanel
@@ -238,7 +247,11 @@ export const WritePointValueModal = (props: any) => {
                     width: 46,
                   }}
                 />
-                <IconButton name="trash-alt" onClick={() => onChange(null, priorityKey, true)} />
+                <IconButton
+                  name="trash-alt"
+                  onClick={() => onChange(null, priorityKey, true)}
+                  disabled={!formData[priorityKey]}
+                />
               </HorizontalGroup>
             </Grid>
           ))}
@@ -251,7 +264,11 @@ export const WritePointValueModal = (props: any) => {
               <Card variant="outlined">
                 <InlineLabel>
                   {getKeyLabel(priorityKey)}
-                  <TextButton variant="text" onClick={() => onChange(null, priorityKey, true)}>
+                  <TextButton
+                    variant="text"
+                    onClick={() => onChange(null, priorityKey, true)}
+                    disabled={!formData[priorityKey]}
+                  >
                     Clear
                   </TextButton>
                 </InlineLabel>
