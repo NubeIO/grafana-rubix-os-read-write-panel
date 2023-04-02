@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [v1.2.0](https://github.com/NubeIO/grafana-flow-framework-read-write-panel/tree/v1.2.0) (2022-04-02)
+
+- Priority array write support
+
 ## [v1.1.2](https://github.com/NubeIO/grafana-flow-framework-read-write-panel/tree/v1.1.2) (2022-01-16)
 
 - Cannot read properties of undefined (reading 'fields')
