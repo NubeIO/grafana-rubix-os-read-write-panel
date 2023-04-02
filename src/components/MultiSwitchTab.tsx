@@ -10,12 +10,15 @@ export const MultiSwitchTab: React.FC<StandardEditorProps> = (props) => {
 
   useEffect(() => {
     const transformedVal: MultiSwitchTabType = { type: type, data: {} };
-    [...Array(count).keys()].forEach((i) => {
-      transformedVal.data[i] = { name: '', value: -1 };
-      transformedVal.data[i].name = (keyValues[i] && keyValues[i].name) || '';
-      transformedVal.data[i].value = (keyValues[i] && keyValues[i].value) || -1;
-    });
-    props.onChange(transformedVal);
+    if (count) {
+      // @ts-ignore
+      [...Array(count).keys()].forEach((i) => {
+        transformedVal.data[i] = { name: '', value: -1 };
+        transformedVal.data[i].name = (keyValues[i] && keyValues[i].name) || '';
+        transformedVal.data[i].value = (keyValues[i] && keyValues[i].value) || -1;
+      });
+      props.onChange(transformedVal);
+    }
   }, [count, type, JSON.stringify(keyValues)]);
 
   return (
@@ -45,36 +48,38 @@ export const MultiSwitchTab: React.FC<StandardEditorProps> = (props) => {
         placeholder="Select Switch Type"
         value={type}
       />
-      {[...Array(count).keys()].map((keyVal, i) => {
-        return (
-          <div key={keyVal} style={{ margin: '8px 0 0 8px' }}>
-            <HorizontalGroup>
-              <Input
-                onChange={(e) => {
-                  if (!keyValues[i]) {
-                    keyValues[i] = { name: '', value: '' };
-                  }
-                  keyValues[i].name = (e.target as HTMLTextAreaElement).value;
-                  setKeyValues({ ...keyValues });
-                }}
-                value={(keyValues[i] && keyValues[i].name) || ''}
-                placeholder="name"
-              />
-              <Input
-                onChange={(e) => {
-                  if (!keyValues[i]) {
-                    keyValues[i] = { name: '', value: '' };
-                  }
-                  keyValues[i].value = (e.target as HTMLTextAreaElement).value;
-                  setKeyValues({ ...keyValues });
-                }}
-                value={(keyValues[i] && keyValues[i].value) || ''}
-                placeholder="value"
-              />
-            </HorizontalGroup>
-          </div>
-        );
-      })}
+      {count &&
+        // @ts-ignore
+        [...Array(count).keys()].map((keyVal, i) => {
+          return (
+            <div key={keyVal} style={{ margin: '8px 0 0 8px' }}>
+              <HorizontalGroup>
+                <Input
+                  onChange={(e) => {
+                    if (!keyValues[i]) {
+                      keyValues[i] = { name: '', value: '' };
+                    }
+                    keyValues[i].name = (e.target as HTMLTextAreaElement).value;
+                    setKeyValues({ ...keyValues });
+                  }}
+                  value={(keyValues[i] && keyValues[i].name) || ''}
+                  placeholder="name"
+                />
+                <Input
+                  onChange={(e) => {
+                    if (!keyValues[i]) {
+                      keyValues[i] = { name: '', value: '' };
+                    }
+                    keyValues[i].value = (e.target as HTMLTextAreaElement).value;
+                    setKeyValues({ ...keyValues });
+                  }}
+                  value={(keyValues[i] && keyValues[i].value) || ''}
+                  placeholder="value"
+                />
+              </HorizontalGroup>
+            </div>
+          );
+        })}
     </>
   );
 };

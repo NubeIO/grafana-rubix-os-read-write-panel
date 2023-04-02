@@ -8,6 +8,7 @@ import { PanelProps } from '../types/panelProps';
 
 interface SliderProps extends WriterHocProps, PanelProps {
   customStyles: any;
+  size: string;
 }
 
 function getStyles(customStyles: any) {
@@ -37,23 +38,25 @@ const ThumbComponent = (props: any) => {
   );
 };
 
-function SliderPanel(props: SliderProps) {
+export function SliderPanelComponent(props: SliderProps) {
   const {
-    currentValue,
+    isEditPanel,
+    currentValue: _currentValue,
     originalValue,
     setCurrentValue,
     onSetValue,
     customStyles,
     options,
     isRunning,
-    onResetValue,
+    onResetValue: _onResetValue,
     fieldConfig,
+    size,
   } = props;
 
   const useStyles = getStyles(customStyles);
   const classes = useStyles();
-
   let [_CustomSlider, setCustomSlider] = useState<any>(null);
+  let [internalVal, setInternalVal] = useState(_currentValue);
 
   useEffect(() => {
     setCustomSlider(
@@ -61,6 +64,7 @@ function SliderPanel(props: SliderProps) {
         root: {
           height: 6,
           color: options?.overrideSliderSettings ? options?.sliderColor : customStyles?.slider?.color,
+          width: options?.sliderWidth ? options?.sliderWidth : '',
         },
         thumb: {
           marginTop: -8,
@@ -93,22 +97,36 @@ function SliderPanel(props: SliderProps) {
     );
   }, [customStyles.slider.color, options]);
 
+  const currentValue = isEditPanel ? internalVal : _currentValue;
+
+  const onResetValue = () => {
+    _onResetValue();
+    setInternalVal(originalValue);
+  };
+
   return (
     <div className={classes.slider}>
-      <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-        <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
-          Set
-        </Button>
-        <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
-          Reset
-        </Button>
-      </ButtonGroup>
+      {(onSetValue || onResetValue) && (
+        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+          {onSetValue && (
+            <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
+              Set
+            </Button>
+          )}
+          {onResetValue && (
+            <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
+              Reset
+            </Button>
+          )}
+        </ButtonGroup>
+      )}
       {_CustomSlider && (
         <_CustomSlider
           ThumbComponent={(props: any) => <ThumbComponent {...props} currentValue={currentValue} />}
           min={fieldConfig?.min || 0}
           max={fieldConfig?.max || 100}
           defaultValue={originalValue}
+          size={size}
           value={currentValue}
           valueLabelDisplay="on"
           onChange={(e: any, value: any) => {
@@ -118,6 +136,7 @@ function SliderPanel(props: SliderProps) {
             } else {
               val = value;
             }
+            setInternalVal(val);
             setCurrentValue(val);
           }}
           disabled={isRunning}
@@ -127,4 +146,4 @@ function SliderPanel(props: SliderProps) {
   );
 }
 
-export default withWriter(SliderPanel);
+export default withWriter(SliderPanelComponent);

@@ -40,7 +40,7 @@ function getStyles() {
 }
 
 export const withWriter = (ComposedComponent: any) => (props: any) => {
-  const { setIsRunning, services, data, isRunning } = props;
+  const { setIsRunning, onGetValue, services, data, isRunning } = props;
   const [originalValue, setOriginalValue] = useState(0);
   const [currentValue, setCurrentValue] = useState(0);
   const [value, setValue] = useState<any>({});
@@ -71,7 +71,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     });
     const valueWithoutMapping = displayProcessorWithoutMapping(writerValue?.present_value);
     setValue({ ...value, suffix: valueWithoutMapping.suffix });
-  }, [data]);
+  }, [data, currentResponse]);
 
   useEffect(() => {
     if (writerValue) {
@@ -103,7 +103,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     onWriteValue(value);
   };
 
-  const onWriteValue = (value: any) => {
+  const onWriteValue = async (value: any) => {
     const selectedPriorityKey = currentPriority && currentPriority.name;
     const writerUUID = writerValue.uuid;
 
@@ -111,18 +111,20 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
       appEvents.emit(AppEvents.alertError, ['Current priority not selected!']);
       return Promise.reject('Current priority not selected.');
     }
-    const payload = writerUiService.constructWriterPayload(selectedPriorityKey, value);
+    const payload = writerUiService.constructWriterPayloadValue(selectedPriorityKey, value);
 
-    if (typeof services?.writerActionService?.createPointPriorityArray === 'function') {
+    if (typeof services?.pointWriteActionService?.createPointPriorityArray === 'function') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
       setIsEditing(false);
     }
-    return services?.writerActionService
+
+    return await services?.pointWriteActionService
       ?.createPointPriorityArray(writerUUID, payload)
-      .then((res: any) => {
+      .then(async (res: any) => {
         setCurrentResponse(res);
+        await onGetValue();
         appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
       })
       .catch(() => {

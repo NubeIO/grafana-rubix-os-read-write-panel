@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { css, cx } from 'emotion';
-import { PanelProps } from '@grafana/data';
+import { AppEvents, PanelData, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { stylesFactory } from '@grafana/ui';
+import {
+  HorizontalGroup,
+  Icon,
+  IconButton,
+  LoadingPlaceholder,
+  stylesFactory,
+  Tag,
+  Tooltip,
+  VerticalGroup,
+} from '@grafana/ui';
 import { Z_INDEX_BACKGROUND, Z_INDEX_OVERLAY, Z_INDEX_WRITER } from './constants/ui';
 import {
   MultiSwitchPanel,
@@ -10,19 +19,30 @@ import {
   SingleStatPanel,
   SliderPanel,
   SwitchPanel,
-  WriterDisplayPanel,
+  DisplayPanel,
 } from './panels';
 import {
   BISettingsProps,
   ButtonColorSettings,
   PanelOptions,
   PanelType,
+  Priority,
   SliderColorSettings,
   SwitchColorSettings,
   TextSettings,
 } from './types';
+import withGenericDialog from 'components/dialog/withGenericDialog';
+import { WritePointValueModal } from 'components/write-point-value';
+import { DIALOG_NAMES } from 'constants/dialogNames';
+import * as writerUiService from './services/writerUiService';
+import _ from 'lodash';
+// @ts-ignore
+import appEvents from 'grafana/app/core/app_events';
+import { generateUUID } from 'utils/uuid';
 
-interface Props extends PanelProps<PanelOptions> {}
+interface Props extends PanelProps<PanelOptions> {
+  openGenericDialog: Function;
+}
 
 const getStyles = stylesFactory(() => {
   return {
@@ -43,6 +63,18 @@ const getStyles = stylesFactory(() => {
       position: absolute;
       top: -32px;
       right: -2px;
+    `,
+    overlayRunning: css`
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: black;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     `,
   };
 });
@@ -102,11 +134,21 @@ const defaultBiSettings = {
   yPosition: 0,
 };
 
-export const BasePanel: React.FC<Props> = (props: Props) => {
+function fetchPriority(value: PanelData): Priority {
+  // @ts-ignore
+  return value.series[0]?.fields[1].values.buffer[0].priority;
+}
+
+function fetchWriterPriority(value: PanelData): string {
+  // @ts-ignore
+  return value.series[0]?.fields[1].values.buffer[0].current_priority?.toString();
+}
+
+const _BasePanel: React.FC<Props> = (props: Props) => {
   const styles = getStyles();
 
   const [isDatasourceConfigured, changeIsDatasourceConfigured] = useState(false);
-  const { data, width, fieldConfig, height, options } = props;
+  const { data: value, width, fieldConfig, height, options, openGenericDialog } = props;
   const { panelType, overrideBISettings, backgroundImageURL } = options;
   const [dataSource, setDataSource] = useState<any>({});
   const [isRunning, setIsRunning] = useState(false);
@@ -120,7 +162,9 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
   const [scale, setScale] = useState(0);
   const [xPosition, setXPosition] = useState(0);
   const [yPosition, setYPosition] = useState(0);
-
+  const [data, setData] = useState(value);
+  const [priority, setPriority] = useState(fetchPriority(value));
+  const [key, setKey] = useState(generateUUID());
   const customStyles = getCustomStyles({ options, buttonStyle, sliderColorSettings });
 
   useEffect(() => {
@@ -143,6 +187,8 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (isDatasourceConfigured) {
+      setData(value);
+      setPriority(fetchPriority(value));
       return;
     }
     const datasources = data?.request?.targets.map((x) => x.datasource);
@@ -165,7 +211,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           });
       });
     }
-  }, [data]);
+  }, [value]);
 
   const computedWrapperClassname = cx(
     styles.wrapper,
@@ -174,6 +220,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
       height: ${height}px;
     `
   );
+
   const renderPanelType = (panelType: PanelType) => {
     return isDatasourceConfigured && panelType === currentPanelType;
   };
@@ -195,10 +242,89 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
     setBISettings(_BISettings);
   };
 
+  const openPriorityWriter = () => {
+    const fields = props?.data?.series[0]?.fields[1];
+    //@ts-ignore
+    const value = fields?.values?.buffer[0];
+
+    openGenericDialog(DIALOG_NAMES.writePointDialog, {
+      title: 'Write Priority Array',
+      icon: 'cloud-upload',
+      panelType: currentPanelType,
+      priority: priority,
+      options: options,
+      customStyles: customStyles,
+      fieldConfig: fieldConfig.defaults,
+      switchColorSettings: switchColorSettings,
+      multiSwitchTab: options.multiSwitchTab,
+      dialogBody: WritePointValueModal,
+      setPriority: onSetPriority,
+      display: fields?.display,
+    });
+  };
+
+  const onSetPriority = async (value: Priority) => {
+    const payload = writerUiService.constructWriterPayload(value);
+    const writerUUID = value.point_uuid;
+
+    if (typeof dataSource.services?.pointWriteActionService?.createPointPriorityArray === 'function') {
+      setIsRunning(true);
+    } else {
+      setIsRunning(false);
+    }
+
+    return await dataSource.services?.pointWriteActionService
+      ?.createPointPriorityArray(writerUUID, payload)
+      .then(async (res: any) => {
+        await onGetValue();
+        setKey(generateUUID());
+        appEvents.emit(AppEvents.alertSuccess, [`Point value set to ${value}`]);
+      })
+      .catch(() => {
+        appEvents.emit(AppEvents.alertError, ['Unsuccessful to set writer value!']);
+      })
+      .finally(() => {
+        setIsRunning(false);
+      });
+  };
+
+  const onGetValue = async () => {
+    const series = _.get(data, 'series', []);
+    if (!series.length) {
+      return;
+    }
+    const writerValue = await writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
+    const writerUUID = writerValue.uuid;
+
+    if (typeof dataSource.services?.pointsService?.fetchByPointUUID === 'function') {
+      setIsRunning(true);
+      return dataSource.services?.pointsService
+        ?.fetchByPointUUID(writerUUID, true)
+        .then((res: any) => {
+          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', res);
+          setData(result);
+          setPriority(res.priority);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setIsRunning(false);
+        });
+    }
+  };
+
+  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data).displayName;
+  const writerPriority = fetchWriterPriority(data) ?? currentPriority;
+
   return (
     <div className={computedWrapperClassname}>
+      <div style={{ float: 'right', transform: 'translate(-12px, -32px)' }}>
+        <HorizontalGroup>
+          <IconButton name="cloud-upload" size="lg" key="cloud-upload" onClick={openPriorityWriter} />
+        </HorizontalGroup>
+      </div>
       {renderPanelType(PanelType.DISPLAY) && (
-        <WriterDisplayPanel
+        <DisplayPanel
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -206,10 +332,12 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           fieldConfig={fieldConfig.defaults}
           phyWriterMap={dataSource.flowNetworksPhyDevices}
           services={dataSource.services}
+          onGetValue={onGetValue}
         />
       )}
       {renderPanelType(PanelType.SLIDER) && (
         <SliderPanel
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -218,10 +346,12 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           services={dataSource.services}
           fieldConfig={fieldConfig.defaults}
           phyWriterMap={dataSource.flowNetworksPhyDevices}
+          onGetValue={onGetValue}
         />
       )}
       {renderPanelType(PanelType.SINGLESTAT) && (
         <SingleStatPanel
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -230,6 +360,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           services={dataSource.services}
           fieldConfig={fieldConfig.defaults}
           phyWriterMap={dataSource.flowNetworksPhyDevices}
+          onGetValue={onGetValue}
         />
       )}
       {renderPanelType(PanelType.MULTISWITCH) && (
@@ -243,10 +374,12 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           fieldConfig={fieldConfig.defaults}
           multiSwitchTab={options.multiSwitchTab}
           phyWriterMap={dataSource.flowNetworksPhyDevices}
+          onGetValue={onGetValue}
         />
       )}
       {renderPanelType(PanelType.SWITCH) && (
         <SwitchPanel
+          key={key}
           data={data}
           options={options}
           isRunning={isRunning}
@@ -256,6 +389,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           fieldConfig={fieldConfig.defaults}
           switchColorSettings={switchColorSettings}
           phyWriterMap={dataSource.flowNetworksPhyDevices}
+          onGetValue={onGetValue}
         />
       )}
       {renderPanelType(PanelType.NUMERICFIELDWRITER) && (
@@ -268,6 +402,7 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           services={dataSource.services}
           fieldConfig={fieldConfig.defaults}
           phyWriterMap={dataSource.flowNetworksPhyDevices}
+          onGetValue={onGetValue}
         />
       )}
       {backgroundImageURL && (
@@ -288,7 +423,53 @@ export const BasePanel: React.FC<Props> = (props: Props) => {
           }}
         />
       )}
+      <InfoHeader currentPriority={currentPriority} writerPriority={writerPriority} />
       {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
+      {isRunning && (
+        <div className={styles.overlayRunning}>
+          <LoadingPlaceholder />
+        </div>
+      )}
     </div>
   );
 };
+
+interface InfoHeaderProps {
+  writerPriority: string;
+  currentPriority: string;
+}
+
+function InfoHeader(props: InfoHeaderProps) {
+  const { writerPriority, currentPriority } = props;
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        transform: 'translate(0, -30px)',
+      }}
+    >
+      <Tooltip
+        content={
+          <VerticalGroup>
+            <HorizontalGroup>
+              {writerPriority !== currentPriority ? 'Read Priority:' : 'Read/Write Priority:'}
+              <Tag name={writerPriority} colorIndex={5} />
+            </HorizontalGroup>
+            {writerPriority !== currentPriority && (
+              <HorizontalGroup>
+                Write Priority:
+                <Tag name={currentPriority} colorIndex={7} />
+              </HorizontalGroup>
+            )}
+          </VerticalGroup>
+        }
+      >
+        <Icon name="info-circle" style={{ color: writerPriority !== currentPriority ? 'orange' : 'currentColor' }} />
+      </Tooltip>
+    </div>
+  );
+}
+
+export const BasePanel = withGenericDialog(_BasePanel);

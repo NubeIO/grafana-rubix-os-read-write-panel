@@ -38,11 +38,11 @@ const getStyles = stylesFactory(() => {
   };
 });
 
-function WriterDisplayPanel(props: PanelProps) {
-  const { data, phyWriterMap } = props;
+function DisplayPanel(props: PanelProps) {
+  const { data } = props;
   const styles = getStyles();
   const [time, setTime] = useState(new Date().toLocaleTimeString());
-  const [writer, setWriter] = useState({} as any);
+  const [point, setPoint] = useState({} as any);
 
   useEffect(() => {
     const series = _get(data, 'series', []);
@@ -52,27 +52,11 @@ function WriterDisplayPanel(props: PanelProps) {
       const fieldValue = _get(series, `${currentIdx}.fields[1].values.buffer[0]`, null);
       const _time = new Date(timeFieldValue).toLocaleTimeString();
       setTime(_time);
-      setWriter(fieldValue);
+      setPoint(fieldValue);
     }
   }, [data]);
 
-  const getNetworkName = (writerThingUUID: string) => {
-    const phyWriterObj = phyWriterMap[writerThingUUID];
-    if (!phyWriterObj) {
-      return '';
-    }
-
-    return `${phyWriterObj.network.name || ''} : ${phyWriterObj.device.name || ''} ${phyWriterObj.point.name || ''}`;
-  };
-
-  const getWriterName = () => {
-    if (!writer) {
-      return '';
-    }
-    return `${writer?.writer_thing_name} - ${writer?.writer_thing_class}`;
-  };
-
-  if (!writer) {
+  if (!point) {
     return (
       <div className={styles.container}>
         <p className={styles.warningText}>Please select a writer from appropriate data source!</p>
@@ -83,19 +67,19 @@ function WriterDisplayPanel(props: PanelProps) {
   return (
     <div className={styles.container}>
       <div className="left-container">
-        <p className={styles.title}>Writer</p>
-        <h3>{getWriterName()}</h3>
-        <p className={styles.title}>Network Details</p>
-        <p>{getNetworkName(writer?.writer_thing_uuid)}</p>
+        <p className={styles.title}>Point</p>
+        <h3>{point?.name}</h3>
+        <p className={styles.title}>Point Details</p>
+        <p>{point?.uuid}</p>
         <p className={styles.title}>Updated At</p>
         <p>{time}</p>
       </div>
       <div className="right-container">
         <p className={styles.title}>Present Value</p>
-        <span className={styles.value}>{writer?.present_value}</span>
+        <span className={styles.value}>{point?.present_value}</span>
       </div>
     </div>
   );
 }
 
-export default withWriter(WriterDisplayPanel);
+export default withWriter(DisplayPanel);
