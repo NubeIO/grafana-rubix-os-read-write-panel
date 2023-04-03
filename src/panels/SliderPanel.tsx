@@ -106,14 +106,14 @@ export function SliderPanelComponent(props: SliderProps) {
 
   return (
     <div className={classes.slider}>
-      {(onSetValue || onResetValue) && (
+      {(onSetValue || _onResetValue) && (
         <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
           {onSetValue && (
             <Button disabled={isRunning} onClick={() => onSetValue(currentValue)} className={classes.button}>
               Set
             </Button>
           )}
-          {onResetValue && (
+          {_onResetValue && (
             <Button disabled={currentValue === originalValue} onClick={onResetValue} className={classes.button}>
               Reset
             </Button>
