@@ -18,6 +18,7 @@ import { css } from 'emotion';
 import { SwitchPanelComponent } from 'panels/SwitchPanel';
 import { MultiSwitchPanelComponent } from 'panels/MultiSwitchPanel';
 import { generateUUID } from 'utils/uuid';
+import { debounce } from 'lodash';
 
 function generateKeys(count: number): any {
   // @ts-ignore
@@ -58,7 +59,7 @@ export const WritePointValueModal = (props: any) => {
     closeGenericDialog,
     panelType,
     options,
-    priority,
+    priority = {},
     setPriority,
     display = (value: number) => {
       return {
@@ -108,7 +109,8 @@ export const WritePointValueModal = (props: any) => {
     return panels.indexOf(panelType) >= 0;
   };
 
-  const onChange = (value: number | null, priorityKey: string, reset = false) => {
+  const onChange = (value: number | null, priorityKey: string, reset = true) => {
+    const previousValue = formData[priorityKey];
     formData[priorityKey] = value;
 
     if (reset) {
@@ -121,8 +123,16 @@ export const WritePointValueModal = (props: any) => {
       });
     } else {
       setFormData(formData);
+      if (previousValue == null || value == null) {
+        setKeys({
+          ...keys,
+          [priorityKey]: generateUUID(),
+        });
+      }
     }
   };
+
+  const onChangeWithDebounce = debounce(onChange, 300);
 
   const onreset = (priorityKey: string) => {
     formData[priorityKey] = getNum(priority[priorityKey]);
@@ -186,8 +196,9 @@ export const WritePointValueModal = (props: any) => {
                   </TextButton>
                   <TextButton
                     variant="text"
-                    onClick={() => onChange(null, priorityKey, true)}
-                    disabled={!formData[priorityKey]}
+                    style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
+                    onClick={() => onChange(null, priorityKey)}
+                    disabled={formData[priorityKey] == null}
                   >
                     Clear
                   </TextButton>
@@ -197,7 +208,7 @@ export const WritePointValueModal = (props: any) => {
                   size="small"
                   isEditPanel
                   currentValue={getNum(formData[priorityKey])}
-                  setCurrentValue={(value: any) => onChange(value, priorityKey)}
+                  setCurrentValue={(value: any) => onChangeWithDebounce(value, priorityKey, false)}
                   originalValue={getNum(priority[priorityKey])}
                   {...props}
                   options={{
@@ -232,8 +243,9 @@ export const WritePointValueModal = (props: any) => {
                   suffix={
                     <IconButton
                       name="trash-alt"
-                      onClick={() => onChange(null, priorityKey, true)}
-                      disabled={!formData[priorityKey]}
+                      style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
+                      onClick={() => onChange(null, priorityKey)}
+                      disabled={formData[priorityKey] == null}
                     />
                   }
                 />
@@ -262,8 +274,9 @@ export const WritePointValueModal = (props: any) => {
                 />
                 <IconButton
                   name="trash-alt"
-                  onClick={() => onChange(null, priorityKey, true)}
-                  disabled={!formData[priorityKey]}
+                  style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
+                  onClick={() => onChange(null, priorityKey)}
+                  disabled={formData[priorityKey] == null}
                 />
               </HorizontalGroup>
             </Grid>
@@ -279,8 +292,9 @@ export const WritePointValueModal = (props: any) => {
                   {getKeyLabel(priorityKey)}
                   <TextButton
                     variant="text"
-                    onClick={() => onChange(null, priorityKey, true)}
-                    disabled={!formData[priorityKey]}
+                    style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
+                    onClick={() => onChange(null, priorityKey)}
+                    disabled={formData[priorityKey] == null}
                   >
                     Clear
                   </TextButton>
