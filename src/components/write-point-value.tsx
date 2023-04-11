@@ -20,7 +20,6 @@ import { MultiSwitchPanelComponent } from 'panels/MultiSwitchPanel';
 import { generateUUID } from 'utils/uuid';
 import { debounce } from 'lodash';
 
-
 function generateKeys(count: number): any {
   // @ts-ignore
   return [...Array(count).keys()].reduce((prev, curr) => {
@@ -133,7 +132,7 @@ export const WritePointValueModal = (props: any) => {
     }
   };
 
-  const onChangeWithDebounce = debounce(onChange, 300)
+  const onChangeWithDebounce = debounce(onChange, 300);
 
   const onreset = (priorityKey: string) => {
     formData[priorityKey] = getNum(priority[priorityKey]);
@@ -197,7 +196,7 @@ export const WritePointValueModal = (props: any) => {
                   </TextButton>
                   <TextButton
                     variant="text"
-                    style={{ color: formData[priorityKey] != null ? "red" : "#B2B6B9" }}
+                    style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
                     onClick={() => onChange(null, priorityKey)}
                     disabled={formData[priorityKey] == null}
                   >
@@ -244,7 +243,7 @@ export const WritePointValueModal = (props: any) => {
                   suffix={
                     <IconButton
                       name="trash-alt"
-                      style={{ color: formData[priorityKey] != null ? "red" : "#B2B6B9" }}
+                      style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
                       onClick={() => onChange(null, priorityKey)}
                       disabled={formData[priorityKey] == null}
                     />
@@ -275,7 +274,7 @@ export const WritePointValueModal = (props: any) => {
                 />
                 <IconButton
                   name="trash-alt"
-                  style={{ color: formData[priorityKey] != null ? "red" : "#B2B6B9" }}
+                  style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
                   onClick={() => onChange(null, priorityKey)}
                   disabled={formData[priorityKey] == null}
                 />
@@ -293,7 +292,7 @@ export const WritePointValueModal = (props: any) => {
                   {getKeyLabel(priorityKey)}
                   <TextButton
                     variant="text"
-                    style={{ color: formData[priorityKey] != null ? "red" : "#B2B6B9" }}
+                    style={{ color: formData[priorityKey] != null ? 'red' : '#B2B6B9' }}
                     onClick={() => onChange(null, priorityKey)}
                     disabled={formData[priorityKey] == null}
                   >
