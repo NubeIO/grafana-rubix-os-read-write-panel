@@ -125,8 +125,14 @@ export const WritePointValueModal = (props: any) => {
   };
 
   const onreset = (priorityKey: string) => {
-    formData[priorityKey] = getNum(priority[priority]);
-    setFormData({ ...formData });
+    formData[priorityKey] = getNum(priority[priorityKey]);
+    setFormData({
+      ...formData,
+    });
+    setKeys({
+      ...keys,
+      [priorityKey]: generateUUID(),
+    });
   };
 
   const handleClose = () => {
@@ -170,6 +176,14 @@ export const WritePointValueModal = (props: any) => {
               <Card variant="outlined">
                 <InlineLabel>
                   {getKeyLabel(priorityKey)}
+                  <div style={{ flex: 1 }} />
+                  <TextButton
+                    variant="text"
+                    onClick={() => onreset(priorityKey)}
+                    disabled={getNum(formData[priorityKey]) === getNum(priority[priorityKey])}
+                  >
+                    Reset
+                  </TextButton>
                   <TextButton
                     variant="text"
                     onClick={() => onChange(null, priorityKey, true)}
@@ -184,7 +198,6 @@ export const WritePointValueModal = (props: any) => {
                   isEditPanel
                   currentValue={getNum(formData[priorityKey])}
                   setCurrentValue={(value: any) => onChange(value, priorityKey)}
-                  onResetValue={() => onreset(priorityKey)}
                   originalValue={getNum(priority[priorityKey])}
                   {...props}
                   options={{

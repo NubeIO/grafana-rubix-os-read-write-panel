@@ -312,7 +312,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data).displayName;
+  const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data)?.displayName;
   const writerPriority = fetchWriterPriority(data) ?? currentPriority;
 
   return (
