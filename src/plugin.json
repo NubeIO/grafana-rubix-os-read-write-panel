@@ -1,9 +1,9 @@
 {
   "type": "panel",
-  "name": "FlowFramework R/W Panel",
-  "id": "nubeio-grafana-flow-framework-read-write-panel",
+  "name": "Rubix OS R/W Panel",
+  "id": "grafana-rubix-os-read-write-panel",
   "info": {
-    "description": "Grafana FlowFramework Read Write Panel",
+    "description": "Grafana Rubix OS Read Write Panel",
     "author": {
       "name": "Nube iO",
       "url": "https://nubeio.com"
@@ -19,11 +19,11 @@
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/NubeIO/grafana-flow-framework-read-write-panel"
+        "url": "https://github.com/NubeIO/grafana-rubix-os-read-write-panel"
       },
       {
         "name": "License",
-        "url": "https://github.com/NubeIO/grafana-flow-framework-read-write-panel/master/LICENSE"
+        "url": "https://github.com/NubeIO/grafana-rubix-os-read-write-panel/master/LICENSE"
       }
     ],
     "screenshots": [],

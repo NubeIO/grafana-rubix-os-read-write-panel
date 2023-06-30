@@ -103,7 +103,7 @@ const getCustomStyles = ({ options, buttonStyle, sliderColorSettings }: any) => 
   },
 });
 
-const FLOW_FRAMEWORK_DATASOURCE_ID = 'nubeio-flow-framework-data-source';
+const RUBIX_FRAMEWORK_DATASOURCE_ID = 'grafana-rubix-os-data-source';
 
 const defaultTextSettings = {
   textSize: 40,
@@ -198,7 +198,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
         return getDataSourceSrv()
           .get(datasource)
           .then((res) => {
-            if (res.meta.id === FLOW_FRAMEWORK_DATASOURCE_ID) {
+            if (res.meta.id === RUBIX_FRAMEWORK_DATASOURCE_ID) {
               setDataSource(res);
               changeIsDatasourceConfigured(true);
               updateUiConfig(res);
@@ -265,16 +265,18 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
   const onSetPriority = async (value: Priority) => {
     const payload = writerUiService.constructWriterPayload(value);
-    const writerUUID = value.point_uuid;
-
-    if (typeof dataSource.services?.pointWriteActionService?.createPointPriorityArray === 'function') {
+    const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data) as any;
+    const writerUUID = writerValue.uuid;
+    const hostUUID = writerValue.host_uuid;
+    // todo
+    if (typeof dataSource.services?.pointsService?.createPointPriorityArray === 'function') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
     }
 
-    return await dataSource.services?.pointWriteActionService
-      ?.createPointPriorityArray(writerUUID, payload)
+    return await dataSource.services?.pointsService
+      ?.createPointPriorityArray(writerUUID, hostUUID, payload)
       .then(async (res: any) => {
         await onGetValue();
         setKey(generateUUID());
@@ -295,13 +297,15 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
     }
     const writerValue = await writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
     const writerUUID = writerValue.uuid;
+    const hostUUID = writerValue.host_uuid;
 
     if (typeof dataSource.services?.pointsService?.fetchByPointUUID === 'function') {
       setIsRunning(true);
       return dataSource.services?.pointsService
-        ?.fetchByPointUUID(writerUUID, true)
+        ?.fetchByPointUUID(writerUUID, hostUUID, true)
         .then((res: any) => {
-          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', res);
+          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', { ...res, host_uuid: hostUUID });
+
           setData(result);
           setPriority(res.priority);
         })
