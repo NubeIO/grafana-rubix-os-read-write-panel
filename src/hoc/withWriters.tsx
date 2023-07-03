@@ -106,6 +106,7 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
   const onWriteValue = async (value: any) => {
     const selectedPriorityKey = currentPriority && currentPriority.name;
     const writerUUID = writerValue.uuid;
+    const hostUUID = writerValue.host_uuid;
 
     if (!selectedPriorityKey) {
       appEvents.emit(AppEvents.alertError, ['Current priority not selected!']);
@@ -113,15 +114,15 @@ export const withWriter = (ComposedComponent: any) => (props: any) => {
     }
     const payload = writerUiService.constructWriterPayloadValue(selectedPriorityKey, value);
 
-    if (typeof services?.pointWriteActionService?.createPointPriorityArray === 'function') {
+    if (typeof services?.pointsService?.createPointPriorityArray === 'function') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
       setIsEditing(false);
     }
 
-    return await services?.pointWriteActionService
-      ?.createPointPriorityArray(writerUUID, payload)
+    return await services?.pointsService
+      ?.createPointPriorityArray(writerUUID, hostUUID, payload)
       .then(async (res: any) => {
         setCurrentResponse(res);
         await onGetValue();

@@ -76,6 +76,22 @@ const getStyles = stylesFactory(() => {
       align-items: center;
       justify-content: center;
     `,
+    container: css`
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    `,
+    warningText: css`
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #999;
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+    `,
   };
 });
 
@@ -103,7 +119,7 @@ const getCustomStyles = ({ options, buttonStyle, sliderColorSettings }: any) => 
   },
 });
 
-const FLOW_FRAMEWORK_DATASOURCE_ID = 'nubeio-flow-framework-data-source';
+const RUBIX_FRAMEWORK_DATASOURCE_ID = 'grafana-rubix-os-data-source';
 
 const defaultTextSettings = {
   textSize: 40,
@@ -135,13 +151,13 @@ const defaultBiSettings = {
 };
 
 function fetchPriority(value: PanelData): Priority {
-  // @ts-ignore
-  return value.series[0]?.fields[1].values.buffer[0].priority;
+  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, value);
+  return writerValue?.priority;
 }
 
 function fetchWriterPriority(value: PanelData): string {
-  // @ts-ignore
-  return value.series[0]?.fields[1].values.buffer[0].current_priority?.toString();
+  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, value);
+  return writerValue?.current_priority?.toString();
 }
 
 const _BasePanel: React.FC<Props> = (props: Props) => {
@@ -163,7 +179,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   const [xPosition, setXPosition] = useState(0);
   const [yPosition, setYPosition] = useState(0);
   const [data, setData] = useState(value);
-  const [priority, setPriority] = useState(fetchPriority(value));
+  const [priority, setPriority] = useState(fetchPriority(data));
   const [key, setKey] = useState(generateUUID());
   const customStyles = getCustomStyles({ options, buttonStyle, sliderColorSettings });
 
@@ -188,17 +204,17 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     if (isDatasourceConfigured) {
       setData(value);
-      setPriority(fetchPriority(value));
-      return;
+      setPriority(fetchPriority(data));
     }
-    const datasources = data?.request?.targets.map((x) => x.datasource);
+
+    const datasources = value?.request?.targets?.map((x) => x.datasource);
 
     if (Array.isArray(datasources) && datasources.length > 0) {
       datasources.map((datasource) => {
         return getDataSourceSrv()
           .get(datasource)
           .then((res) => {
-            if (res.meta.id === FLOW_FRAMEWORK_DATASOURCE_ID) {
+            if (res.meta.id === RUBIX_FRAMEWORK_DATASOURCE_ID) {
               setDataSource(res);
               changeIsDatasourceConfigured(true);
               updateUiConfig(res);
@@ -265,16 +281,18 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
   const onSetPriority = async (value: Priority) => {
     const payload = writerUiService.constructWriterPayload(value);
-    const writerUUID = value.point_uuid;
-
-    if (typeof dataSource.services?.pointWriteActionService?.createPointPriorityArray === 'function') {
+    const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data) as any;
+    const writerUUID = writerValue.uuid;
+    const hostUUID = writerValue.host_uuid;
+    // todo
+    if (typeof dataSource.services?.pointsService?.createPointPriorityArray === 'function') {
       setIsRunning(true);
     } else {
       setIsRunning(false);
     }
 
-    return await dataSource.services?.pointWriteActionService
-      ?.createPointPriorityArray(writerUUID, payload)
+    return await dataSource.services?.pointsService
+      ?.createPointPriorityArray(writerUUID, hostUUID, payload)
       .then(async (res: any) => {
         await onGetValue();
         setKey(generateUUID());
@@ -295,13 +313,15 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
     }
     const writerValue = await writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, data);
     const writerUUID = writerValue.uuid;
+    const hostUUID = writerValue.host_uuid;
 
     if (typeof dataSource.services?.pointsService?.fetchByPointUUID === 'function') {
       setIsRunning(true);
       return dataSource.services?.pointsService
-        ?.fetchByPointUUID(writerUUID, true)
+        ?.fetchByPointUUID(writerUUID, hostUUID, true)
         .then((res: any) => {
-          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', res);
+          const result = _.set(data, 'series[0].fields[1].values.buffer[0]', { ...res, host_uuid: hostUUID });
+
           setData(result);
           setPriority(res.priority);
         })
@@ -314,6 +334,14 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data)?.displayName;
   const writerPriority = fetchWriterPriority(data) ?? currentPriority;
+
+  if (!isDatasourceConfigured) {
+    return (
+      <div className={styles.container}>
+        <p className={styles.warningText}>Selected datasource is not correct!</p>
+      </div>
+    );
+  }
 
   return (
     <div className={computedWrapperClassname}>
@@ -424,7 +452,6 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
         />
       )}
       <InfoHeader currentPriority={currentPriority} writerPriority={writerPriority} />
-      {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
       {isRunning && (
         <div className={styles.overlayRunning}>
           <LoadingPlaceholder />

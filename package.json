@@ -1,18 +1,18 @@
 {
-  "name": "nubeio-grafana-flow-framework-read-write-panel",
-  "version": "1.2.0",
-  "description": "FlowFramework R/W Panel",
+  "name": "grafana-rubix-os-read-write-panel",
+  "version": "1.0.0",
+  "description": "Rubix OS R/W Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "repository": "git@github.com:NubeIO/grafana-flow-framework-read-write-panel.git",
+  "repository": "git@github.com:NubeIO/grafana-rubix-os-read-write-panel.git",
   "author": "Nube iO",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/NubeIO/grafana-flow-framework-read-write-panel/issues",
+    "url": "https://github.com/NubeIO/grafana-rubix-os-read-write-panel/issues",
     "email": "plugins@grafana.com"
   },
   "devDependencies": {

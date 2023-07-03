@@ -59,7 +59,7 @@ function DisplayPanel(props: PanelProps) {
   if (!point) {
     return (
       <div className={styles.container}>
-        <p className={styles.warningText}>Please select a writer from appropriate data source!</p>
+        <p className={styles.warningText}>Please select a point from appropriate Host!</p>
       </div>
     );
   }
