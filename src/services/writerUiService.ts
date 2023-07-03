@@ -14,8 +14,6 @@ const transformToNumericValue = (value: any): number | string => {
 
 export const constructWriterPayloadValue = (key: string, value: string) => {
   return {
-    action: 'write',
-    ask_refresh: true,
     priority: {
       [key]: transformToNumericValue(value),
     },
@@ -24,8 +22,6 @@ export const constructWriterPayloadValue = (key: string, value: string) => {
 
 export const constructWriterPayload = (priority: Priority) => {
   return {
-    action: 'write',
-    ask_refresh: true,
     priority: priority,
   };
 };

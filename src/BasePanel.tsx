@@ -135,13 +135,13 @@ const defaultBiSettings = {
 };
 
 function fetchPriority(value: PanelData): Priority {
-  // @ts-ignore
-  return value.series[0]?.fields[1].values.buffer[0].priority;
+  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, value);
+  return writerValue?.priority;
 }
 
 function fetchWriterPriority(value: PanelData): string {
-  // @ts-ignore
-  return value.series[0]?.fields[1].values.buffer[0].current_priority?.toString();
+  const writerValue = writerUiService.getFieldValue(writerUiService.dataFieldKeys.WRITER, value);
+  return writerValue?.current_priority?.toString();
 }
 
 const _BasePanel: React.FC<Props> = (props: Props) => {
@@ -163,7 +163,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   const [xPosition, setXPosition] = useState(0);
   const [yPosition, setYPosition] = useState(0);
   const [data, setData] = useState(value);
-  const [priority, setPriority] = useState(fetchPriority(value));
+  const [priority, setPriority] = useState(fetchPriority(data));
   const [key, setKey] = useState(generateUUID());
   const customStyles = getCustomStyles({ options, buttonStyle, sliderColorSettings });
 
@@ -188,7 +188,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     if (isDatasourceConfigured) {
       setData(value);
-      setPriority(fetchPriority(value));
+      setPriority(fetchPriority(data));
       return;
     }
     const datasources = data?.request?.targets.map((x) => x.datasource);
