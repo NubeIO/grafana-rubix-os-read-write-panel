@@ -76,6 +76,22 @@ const getStyles = stylesFactory(() => {
       align-items: center;
       justify-content: center;
     `,
+    container: css`
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    `,
+    warningText: css`
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #999;
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+    `,
   };
 });
 
@@ -189,9 +205,9 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
     if (isDatasourceConfigured) {
       setData(value);
       setPriority(fetchPriority(data));
-      return;
     }
-    const datasources = data?.request?.targets.map((x) => x.datasource);
+
+    const datasources = value?.request?.targets?.map((x) => x.datasource);
 
     if (Array.isArray(datasources) && datasources.length > 0) {
       datasources.map((datasource) => {
@@ -319,6 +335,14 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
   const currentPriority = writerUiService.getFieldValue(writerUiService.dataFieldKeys.PRIORITY, data)?.displayName;
   const writerPriority = fetchWriterPriority(data) ?? currentPriority;
 
+  if (!isDatasourceConfigured) {
+    return (
+      <div className={styles.container}>
+        <p className={styles.warningText}>Selected datasource is not correct!</p>
+      </div>
+    );
+  }
+
   return (
     <div className={computedWrapperClassname}>
       <div style={{ float: 'right', transform: 'translate(-12px, -32px)' }}>
@@ -428,7 +452,6 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
         />
       )}
       <InfoHeader currentPriority={currentPriority} writerPriority={writerPriority} />
-      {!isDatasourceConfigured && <div>Selected datasource is not correct!</div>}
       {isRunning && (
         <div className={styles.overlayRunning}>
           <LoadingPlaceholder />
