@@ -165,7 +165,7 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
   const [isDatasourceConfigured, changeIsDatasourceConfigured] = useState(false);
   const { data: value, width, fieldConfig, height, options, openGenericDialog } = props;
-  const { panelType, overrideBISettings, backgroundImageURL } = options;
+  const { panelType, isDebugMode, overrideBISettings, backgroundImageURL } = options;
   const [dataSource, setDataSource] = useState<any>({});
   const [isRunning, setIsRunning] = useState(false);
   const [currentPanelType, updatePanelType] = useState<string>(panelType);
@@ -345,11 +345,13 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={computedWrapperClassname}>
-      <div style={{ float: 'right', transform: 'translate(-12px, -32px)' }}>
-        <HorizontalGroup>
-          <IconButton name="cloud-upload" size="lg" key="cloud-upload" onClick={openPriorityWriter} />
-        </HorizontalGroup>
-      </div>
+      {isDebugMode && (
+        <div style={{ float: 'right', transform: 'translate(-12px, -32px)' }}>
+          <HorizontalGroup>
+            <IconButton name="cloud-upload" size="lg" key="cloud-upload" onClick={openPriorityWriter} />
+          </HorizontalGroup>
+        </div>
+      )}
       {renderPanelType(PanelType.DISPLAY) && (
         <DisplayPanel
           key={key}
@@ -451,8 +453,8 @@ const _BasePanel: React.FC<Props> = (props: Props) => {
           }}
         />
       )}
-      <InfoHeader currentPriority={currentPriority} writerPriority={writerPriority} />
-      {isRunning && (
+      {isDebugMode && <InfoHeader currentPriority={currentPriority} writerPriority={writerPriority} />}
+      {isRunning && isDebugMode && (
         <div className={styles.overlayRunning}>
           <LoadingPlaceholder />
         </div>
