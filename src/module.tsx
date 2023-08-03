@@ -384,6 +384,12 @@ export const plugin = new PanelPlugin<PanelOptions>(BasePanel)
         showIf: (currentConfig: PanelOptions) => {
           return currentConfig.overrideBISettings;
         },
+      })
+      .addBooleanSwitch({
+        path: 'isDebugMode',
+        name: 'Debug Mode',
+        defaultValue: false,
+        category: [CategoryType.Debug],
       });
   })
 

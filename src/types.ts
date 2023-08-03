@@ -115,6 +115,7 @@ export enum CategoryType {
   ButtonColorSettings = 'Button Color Settings',
   SliderColorSettings = 'Slider Color Settings',
   Background = 'Background',
+  Debug = 'Debug Options',
 }
 
 export interface SwitchOptions {
@@ -149,6 +150,7 @@ export interface PanelOptions
     NumericOptions,
     SwitchOptions {
   panelType: PanelType;
+  isDebugMode: boolean;
 }
 
 export interface Priority {
